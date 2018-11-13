@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--    Document   : codigos_facturae.xml    Description:        Estructura de la tabla codigos_facturae.-->
+<tabla>
+  <columna>
+    <nombre>id</nombre>
+    <tipo>serial</tipo>
+    <nulo>NO</nulo>
+    <defecto>nextval('codigos_facturae_id_seq'::regclass)</defecto>
+  </columna>
+  <columna>
+    <nombre>nombre</nombre>
+    <tipo>varchar(100)</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <columna>
+    <nombre>codigo</nombre>
+    <tipo>varchar(12)</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <columna>
+    <nombre>tipo</nombre>
+    <tipo>varchar(50)</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <columna>
+    <nombre>codcliente</nombre>
+    <tipo>varchar(6)</tipo>
+    <nulo>NO</nulo>
+  </columna>
+  <restriccion>
+    <nombre>codigos_facturae_pkey</nombre>
+    <consulta>PRIMARY KEY (id)</consulta>
+  </restriccion>
+</tabla>

@@ -1,0 +1,116 @@
+{include="header2"}
+
+<form method="post" enctype="multipart/form-data" class="form">
+
+  <div class="panel panel-primary">
+
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Facturae
+      </h3>
+    </div>
+    <div class="panel-body">
+      <br>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              Código:
+              <input type="text" name="codigo" value="" placeholder="Introduce el código" class="form-control" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              Nombre / Descripción:
+              <input type="text" name="nombre" value="" placeholder="Descripción corta del código" class="form-control" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              Tipo de Código
+              <select name="tipo" class="form-control">
+                {loop="$fsc->tipos"}
+                  <option value="{$key}">{$value}</option>
+                {/loop}
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="panel-footer text-right">
+
+      <a href="javascript:void(0);" class="btn btn-sm btn-default" title="Recarga la página" onclick="window.location.reload();">
+        <i class="fa fa-refresh" aria-hidden="true"></i>
+      </a>
+
+      <button class="btn btn-sm btn-success" type="submit" style="margin-left:5px;" title="Nuevo código">
+        <i class="fa fa-plus" aria-hidden="true"></i> Agregar
+      </button>
+
+    </div>
+
+  </div>
+
+</form>
+
+{loop="$fsc->codigos_cliente->get_by_codcliente()"}
+<form method="post" enctype="multipart/form-data" class="form">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      <i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp; Facturae
+    </h3>
+  </div>
+  <div class="panel-body">
+      <br>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              Código:
+              <input type="hidden" name="id_edit" value="{$value['id']}" required>
+              <input type="text" name="codigo" value="{$value['codigo']}" placeholder="Introduce el código" class="form-control" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              Nombre / Descripción:
+              <input type="text" name="nombre" value="{$value['nombre']}" placeholder="Descripción corta del código" class="form-control" required>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              Tipo de Código
+              <select name="tipo" class="form-control">
+                <option value="{$value['tipo']}">
+                  {$fsc->tipos[$value['tipo']]}
+                </option>
+                {loop="$fsc->tipos"}
+                  <option value="{$key}">{$value}</option>
+                {/loop}
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+  </div>
+  <div class="panel-footer text-right">
+    <a class="btn btn-sm btn-danger pull-left" href="{$fsc->url()}&cod={$fsc->codigos_cliente->codcliente}&delete={$value['id']}">
+      <i class="fa fa-trash" aria-hidden="true"></i>
+      <span class="hidden-xs">&nbsp; Eliminar</span>
+    </a>
+    <button class="btn btn-sm btn-primary" type="submit">
+      <i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar
+    </button>
+  </div>
+</div>
+
+</form>
+{/loop}
+
+{include="footer2"}

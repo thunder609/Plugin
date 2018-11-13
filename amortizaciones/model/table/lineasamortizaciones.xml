@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : lineasamortizaciones.xml
+    Description:
+        Estructura de la tabla lineasamortizaciones.
+-->
+<tabla>
+    <columna>
+        <nombre>ano</nombre>
+        <tipo>integer</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>cantidad</nombre>
+        <tipo>double precision</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>contabilizada</nombre>
+        <tipo>boolean</tipo>
+        <nulo>YES</nulo>
+        <defecto>false</defecto>
+    </columna>
+    <columna>
+        <nombre>fecha</nombre>
+        <tipo>date</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>idamortizacion</nombre>
+        <tipo>integer</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>idasiento</nombre>
+        <tipo>integer</tipo>
+        <nulo>SI</nulo>
+    </columna>
+    <columna>
+        <nombre>idlinea</nombre>
+        <tipo>serial</tipo>
+        <nulo>NO</nulo>
+        <defecto>nextval('lineasamortizaciones_idlinea_seq'::regclass)</defecto>
+    </columna>
+    <columna>
+        <nombre>periodo</nombre>
+        <tipo>integer</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <restriccion>
+        <nombre>lineasamortizaciones_pkey</nombre>
+        <consulta>PRIMARY KEY (idlinea)</consulta>
+    </restriccion>
+</tabla>

@@ -1,0 +1,182 @@
+{include="header"}
+
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-sm-12">
+         <div class="page-header">
+            <h1>
+               <span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>
+               Amortizaciones
+               <a class="btn btn-xs btn-default" href="index.php?page=amortizaciones" title="Recargar la página">
+                  <span class="glyphicon glyphicon-refresh"></span>
+               </a>
+            </h1>
+         </div>
+      </div>
+   </div>
+
+   <div>
+
+      <!-- Cabezeras de las pestañas -->
+      <ul class="nav nav-tabs" role="tablist">
+         <li role="presentation" class="active">
+            <a href="#todas" aria-controls="todas" role="tab" data-toggle="tab">
+               Todas
+            </a>
+         </li>
+         <li role="presentation">
+            <a href="#pendientes" aria-controls="pendientes" role="tab" data-toggle="tab">
+               Pendientes
+            </a>
+         </li>
+      </ul>
+
+      <!-- Conetenido de las pestañas -->
+      <div class="tab-content">
+         <div role="tabpanel" class="tab-pane active" id="todas">
+            <div class="table-responsive">
+               <table class="table table-hover">
+                  <thead>
+                     <tr>
+                        <th style="min-width: 200px;">Artículo</th>
+                        <th width="100" class="text-right" style="min-width: 100px;">Tipo</th>
+                        <th width="120" class="text-right" style="min-width: 120px;">Contabilización</th>
+                        <th width="100" class="text-right" style="min-width: 100px;">Amortizable</th>
+                        <th width="120" class="text-right" style="min-width: 120px;">Valor Residual</th>
+                        <th width="60" class="text-right" style="min-width: 60px;">Años</th>
+                        <th width="100" class="text-right" style="min-width: 100px;">Fecha Inicio</th>
+                        <th width="100" class="text-right" style="min-width: 100px;">Fecha Fin</th>
+                        <th width="120" class="text-right" style="min-width: 120px;">Estado</th>
+                     </tr>
+                  </thead>
+
+                  {if="$fsc->listado == null"}
+                  <tbody><tr class="warning">
+                        <td colspan="9">No hay ninguna amortización creada, abre una factura y pulsa sobre el botón "Amortizar" para cear una amortización.</td>
+                     </tr>
+                  </tbody>
+                  {/if}
+
+                  <tbody>
+                     {loop="$fsc->listado"}
+                     <tr class='clickableRow
+                           {if="$value->vendida == 1 || $value->fin_vida_util == 1"}
+                              danger
+                           {elseif="$value->completada == 1"}
+                              success
+                           {elseif="$value->amortizando == 0"}
+                              warning
+                           {/if}
+                         ' href="index.php?page=editar_amortizacion&id={$value->id_amortizacion}">
+                        <td>
+                           <div>{$value->descripcion}</div>
+                        </td>
+                        <td>
+                           <div class="text-right">{$value->tipo}</div>
+                        </td>
+                        <td>
+                           <div class="text-right">{$value->contabilizacion}</div>
+                        </td>
+                        <td>
+                           <div class="text-right">{$fsc->show_precio($value->valor)}</div>
+                        </td>
+                        <td>
+                           <div class="text-right">{$fsc->show_precio($value->residual)}</div>
+                        </td>
+                        <td>
+                           <div class="text-right">{$value->periodos}</div>
+                        </td>
+                        <td>
+                           <div class="text-right">{$value->fecha_inicio}</div>
+                        </td>
+                        <td>
+                           <div class="text-right">{$value->fecha_fin}</div>
+                        </td>
+                        <td>
+                           <div class="text-right">
+                              {if="$value->vendida == 1"}
+                              Vendida
+                              {elseif="$value->fin_vida_util == 1"}
+                              Vida útil finalizada
+                              {elseif="$value->completada == 1"}
+                              Completada
+                              {elseif="$value->amortizando == 0"}
+                              Anulada
+                              {else}
+                              Amortizando
+                              {/if}
+                           </div>
+                        </td>
+                     </tr>
+                     {/loop}
+                  </tbody>
+               </table>
+            </div>
+            
+            <!--Mejorar la paginación-->
+            <nav aria-label="...">
+               <ul class="pager">
+                  {if condition="$fsc->offset != 0"}
+                  <li class="previous"><a href="index.php?page=amortizaciones&offset={$fsc->offset - $fsc->limite}"><span aria-hidden="true">&larr;</span> Anterior</a></li>
+                  {/if}
+                  {if condition="!empty($fsc->listado)"}
+                  <li class="next"><a href="index.php?page=amortizaciones&offset={$fsc->offset + $fsc->limite}">Siguiente <span aria-hidden="true">&rarr;</span></a></li>
+                  {/if}
+               </ul>
+            </nav>
+         </div>
+         
+         <div role="tabpanel" class="tab-pane" id="pendientes">
+            <div class="table-responsive">
+               <table class="table table-hover">
+                  <thead>
+                     <tr>
+                        <th width="150">Año fiscal</th>
+                        <th width="150">Periodo</th>
+                        <th width="150">Fecha</th>
+                        <th>Artículo</th>
+                        <th width="150" class="text-right">Cantidad a amortizar</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {loop="$fsc->listado_pendientes"}
+                     <tr class="clickableRow" href="index.php?page=editar_amortizacion&id={$value[id_amortizacion]}">
+                        <td>
+                           <div>{$value[ano]}</div>
+                        </td>
+                        <td>
+                           <div>{$value[periodo]}</div>
+                        </td>
+                        <td>
+                           <div>{$value[fecha]}</div>
+                        </td>
+                        <td>
+                           <div>{$value[descripcion]}</div>
+                        </td>
+                        <td>
+                           <div class="text-right">{$fsc->show_precio($value[cantidad])}</div>
+                        </td>
+                     </tr>
+                     {/loop}
+                  </tbody>
+               </table>
+            </div>
+            <div class="row">
+               <div class="col-xs-12 text-right">
+                  <div class="btn-group">
+                     <a class="btn btn-sm btn-primary" href="index.php?page=amortizaciones&count_slope=true&today={$fsc->today()}&year_before={$fsc->ano_antes}">
+                        <span class="glyphicon glyphicon-save"></span>
+                        <span class="hidden-sm hidden-xs">
+                           &nbsp;Contabilizar Pendientes
+                        </span>
+                     </a>
+                  </div>
+               </div>
+            </div>
+         </div>
+         
+      </div>
+   </div>
+</div>
+
+{include="footer"}

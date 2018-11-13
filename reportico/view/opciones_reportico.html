@@ -1,0 +1,276 @@
+{include="header"}
+
+<form action="{$fsc->url()}" method="post">
+    <input type="hidden" name="reportico_setup" value="TRUE"/>
+    <!-- Variables ocultadas para evitar a manazas -->
+    <input type="hidden" name="reportico_http_basedir" id="reportico_http_basedir" value="{$fsc->reportico_http_basedir}" class="form-control"/>
+    <input type="hidden" name="reportico_http_urlhost" id="reportico_http_urlhost" value="{$fsc->reportico_http_urlhost}" class="form-control"/>
+    <input type="hidden" name="reportico_db_type" id="reportico_db_type" value="{$fsc->reportico_db_type}" class="form-control"/>
+    <input type="hidden" name="reportico_db_host" id="reportico_db_host" value="{$fsc->reportico_db_host}" class="form-control"/>
+    <input type="hidden" name="reportico_db_database" id="reportico_db_database" value="{$fsc->reportico_db_database}" class="form-control"/>
+    <input type="hidden" name="reportico_db_user" id="reportico_db_user" value="{$fsc->reportico_db_user}" class="form-control"/>
+    <input type="hidden" name="reportico_db_password" id="reportico_db_password" value="{$fsc->reportico_db_password}" class="form-control"/>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-3">
+                <div class="btn-group">
+                    <a href="{$fsc->url()}" class="btn btn-sm btn-default" title="Recargar la página">
+                        <span class="glyphicon glyphicon-refresh"></span>
+                    </a>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#helpModal">
+                        <span class="fa fa-question"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-xs-6 text-center">
+                <h2 style="margin-top: 0px;">Opciones de Reportes</h2>
+            </div>
+            <div class="col-xs-3 text-right">
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled = true; this.form.submit();">
+                        <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+
+            <br/>
+
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><b>Información</b></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            Este asistente genera la configuración necesaria para utilizar Reportico integrado <br/>
+                            Posiblemente no necesites realizar ningún cambio en la configuración automática, a excepción de las contraseñas.<br/>
+                            <br/>
+                            Los datos que puedes modificar a continuación te permiten acceder a la <a href="plugins/reportico/reportico-src/" target="_blank">Administración de Reportico</a>, desde donde tienes un control completo desde su propio panel.<br/>
+                            <br/>
+                            <strong>NOTA:</strong> Para evitar perder tus modificaciones de Reportico almacena los archivos en:
+                            <ul>
+                               <li><strong>{$fsc->paths[1]}</strong>: Aquí van tus controladores personalizados.</li>
+                               <li><strong>{$fsc->paths[2]}</strong>: Aquí van tus XML personalizados.</li>
+                            </ul>
+                            Cada vez que visites esta página se copiarán a su ruta correcta automáticamente.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><b>Configuración básica de Report</b></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <span class="text-uppercase">Contraseña de administrador de Reportico:</span>
+                                <input type="text" name="reportico_admin_password" id="reportico_admin_password" value="{$fsc->reportico_setup['reportico_admin_password']}" class="form-control" autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <b>Atención:</b> Esta contraseña se utiliza para administrar el entorno de Reportico con todos los privilegios.<br/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <span class="text-uppercase">Título del proyecto:</span>
+                                <input type="text" name="reportico_project_title" id="reportico_project_title" value="{$fsc->reportico_setup['reportico_project_title']}" class="form-control" autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <span class="text-uppercase">Contraseña de acceso:</span>
+                                <input type="text" name="reportico_password" id="reportico_password" value="{$fsc->reportico_setup['reportico_password']}" class="form-control" autocomplete="off"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><b>Personalización de Reportico</b></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <span class="text-uppercase">Formato de fecha:</span>
+                                <input type="text" name="reportico_db_dateformat" id="reportico_db_dateformat" value="{$fsc->reportico_setup['reportico_db_dateformat']}" class="form-control" autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <span class="text-uppercase">Idioma:</span>
+                                <input type="text" name="reportico_language" id="reportico_language" value="{$fsc->reportico_setup['reportico_language']}" class="form-control" autocomplete="off"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><b>Personalización de PDFs generados</b></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        {if condition="$fsc->reportico_setup['reportico_pdf_header_image']!=''"}
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <span class="text-uppercase">Imagen de cabecera:</span>
+                                <input type="text" name="reportico_pdf_header_image" id="reportico_pdf_header_image" value="{$fsc->reportico_setup['reportico_pdf_header_image']}" class="form-control" autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <img src="{$fsc->reportico_setup['reportico_pdf_header_image']}" alt="Logo empresa" class="img-rounded img-responsive center-block" width="{$fsc->reportico_setup['reportico_pdf_header_width']}px">
+                        </div>
+                        {else}
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <span class="text-uppercase">Imagen de cabecera:</span>
+                                <input type="text" name="reportico_pdf_header_image" id="reportico_pdf_header_image" value="{$fsc->reportico_setup['reportico_pdf_header_image']}" class="form-control" autocomplete="off"/>
+                            </div>
+                        </div>
+                        {/if}
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <span class="text-uppercase">Posición X:</span>
+                                <input type="text" name="reportico_pdf_header_xpos" id="reportico_pdf_header_xpos" value="{$fsc->reportico_setup['reportico_pdf_header_xpos']}" class="form-control" autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <span class="text-uppercase">Posición Y:</span>
+                                <input type="text" name="reportico_pdf_header_ypos" id="reportico_pdf_header_ypos" value="{$fsc->reportico_setup['reportico_pdf_header_ypos']}" class="form-control" autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <span class="text-uppercase">Ancho de imagen en cabecera:</span>
+                                <input type="text" name="reportico_pdf_header_width" id="reportico_pdf_header_width" value="{$fsc->reportico_setup['reportico_pdf_header_width']}" class="form-control" autocomplete="off"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" style="width: 90%;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Ayuda</h4>
+            </div>
+            <div class="modal-body">
+                <h3>Cómo utilizar el diseñador de informes</h3>
+
+                Puedes dirigirte a la <a href="plugins/reportico/reportico-src/" target="_blank">Administración de Reportico</a> e identificarte con la contraseña de administrador <b>{$fsc->reportico_setup['reportico_admin_password']}</b> definida desde las <i>Opciones de Reportico</i> y pulsar en <b>Acceder</b>.<br/><br/>
+                <img src="{#FS_PATH#}plugins/reportico/view/images/1-Login.png" class="img-thumbnail img-responsive center-block">
+                <br/>
+                Pulsando el botón <b>Ejecutar</b> de la opción <b>Ejecutar proyecto de informe conjunto</b> accederemos a la lista de Reportes disponibles.<br/><br/>
+                <img src="{#FS_PATH#}plugins/reportico/view/images/2-EjecutarProyectoInforme.png" class="img-thumbnail img-responsive center-block">
+                <br/>
+                Haciendo click en uno de ellos accederemos a su página de edición/ejecución:<br/><br/>
+                <img src="{#FS_PATH#}plugins/reportico/view/images/3-ListaReportes.png" class="img-thumbnail img-responsive center-block">
+                <br/>
+                Desde el primer botón del menú superior llamado <b>Diseño de informes</b> accederemos a su edición y su estructura es la misma que si en el segundo paso hubiéramos accedido a <b>Crear un informe de proyecto</b>.<br/><br/>
+                <img src="{#FS_PATH#}plugins/reportico/view/images/4-DisenoInformes.png" class="img-thumbnail img-responsive center-block">
+
+
+                <h3>Cómo editar un informe</h3>
+
+                Ahora que sabemos como crear y editar un informe, detallaremos en la medida que nos sea posible como se estructura el <b>Diseñador de Informes</b>.<br/><br/>
+                <img src="{#FS_PATH#}plugins/reportico/view/images/5-DisenadorInformes.png" class="img-thumbnail img-responsive center-block">
+                <br/>
+
+                Cabe destacar que para que las modificaciones surtan efecto, después de cada modificación hay que pulsar el botón verde <b>Enviar</b> y cuando queramos generar/actualizar el resultado pulsar en el botón <b>Guardar</b> para volcar el resultado en un archivo XML.<br/><br/>
+
+                La página del <b>Diseñador de Informes</b> está estructura en 5 grupos: 
+                <ul>
+                    <li><b>Formato</b>: Nos va a permitir asignar un Título del informe, descripción, tamaño de PDF, orientación, margenes, tipografía ...</li>
+                    <li><b>Detalles de la consulta</b>: Aquí se nos divide en 3 apartados más:
+                        <ul>
+                            <li><b>SQL</b>: Contiene la consulta SQL a ejecutar para obtener los datos.</li>
+                            <li><b>Columnas de la consulta</b>: La consulta SQL anterior devuelve unos campos indicados o una lista de estos campos, estos campos se procesan como columnas y desde esta opción podremos personalizar si queremos Mostrar/Ocultar dichas columnas, su alineación, anchura, título alternativo, ...</li>
+                            <li><b>Pre-SQLs</b>: Todavía no lo hemos utilizado.</li>
+                        </ul>
+                    </li>
+
+                    <li><b>Asignaciones</b>: Permite asignar un formato especial cómo realizar un sumatorio.</li>
+                    <li><b>Criterios</b>: Los criterios pueden servirnos para cuando queremos filtrar u obtener un elemento concreto, como por ejemplo filtrar artículos por famílias o obtener un recibo de anticipo.</li>
+                    <li><b>Salida</b>: Aquí se nos divide de nuevo en 5 apartados más:
+                        <ul>
+                            <li><b>Encabezados</b>: Definición de los encabezados de cada página.</li>
+                            <li><b>Pies de página</b>: Definición de los pies de cada página.</li>
+                            <li><b>Mostrar orden</b>: Permite indicar el orden de los campos dentro del cuerpo del informe.</li>
+                            <li><b>Grupos</b>: De nuevo se nos divide en 4 apartados:
+                                <ul>
+                                    <li><b>Detalles</b>: Permite indicar si queremos un salto de página antes o después de cabecera o pié.</li>
+                                    <li><b>Encabezados</b>: Datos a indicar en la cabecera de cada grupo.</li>
+                                    <li><b>Trailers</b>: Consiste en el texto a mostrar al final (sumas, totales, ...). En el primer selector indicamos el nombre del campo de la columna donde queremos posicionarlo y en el segundo el campo a mostrar.</li>
+                                </ul>
+                            </li>
+                            <li><b>Gráficos</b>: Todavía no lo hemos utilizado.</li>
+                        </ul>
+                    </li>
+
+                    Casi todos estos apartados disponen de ayudas que enlazan a la documentación oficial, que permite documentarse con mayor profundidad sobre cada opción.<br/><br/>
+
+                    De nuevo recordar que para que las modificaciones surtan efecto, después de cada modificación hay que pulsar el botón verde <b>Enviar</b> y cuando queramos generar/actualizar el resultado pulsar en el botón <b>Guardar</b> para volcar el resultado en un archivo XML.<br/><br/>
+                    
+                    Estos informes debes guardarlos en la ruta <b>{$fsc->paths[2]}</b> para que cuando haya una actualización del plugin, no pierdas tus informes personalizados.<br/><br/>
+
+                    <h3>Cómo integrar otros informes en FacturaScripts</h3>
+
+                    Este plugin ha nacido con la intención de facilitar la tarea de añadir informes, reportes e incluso de alguna carencia como la impresión de recibos de cobro.<br/><br/>
+
+                    Teniendo esto en cuenta, se ha intentado integrar Reportico de la forma más sencilla posible para que utilizando un Diseñador de Informes visual, cualquiera pueda colaborar generando este tipo de documentos.<br/><br/>
+
+                    Cómo muchos usuarios de FacturaScripts saben utilizar un entorno de facturación, pero por contra, la mayoría no sabe programar, se ha intentado también simplificar esta parte. Cómo? Pues escribiendo un controlador que sea lo más genérico posible y donde se tenga que modificar una zona muy concreta:<br/><br/>
+
+                    Puedes <a href="http://pastebin.com/raw/i1nNUHTB" target="_blank">descargarte el código de ejemplo</a> en Pastebin o <a href="http://pastebin.com/i1nNUHTB" target="_blank">ver el código de ejemplo</a>  en Pastebin para utilizarlos como código base para tus cambios.<br/><br/>
+
+                    Si nunca has programado antes, te recomiendo un programa como <a href="https://notepad-plus-plus.org/" target="_blank">NotePad++</a> para Windows o <a href="https://www.geany.org/">Geany</a> para Linux, ambos son entornos muy ligeros y minimalistas.<br/><br/>
+
+                    Este archivo es un controlador de FacturaScripts y de el sólo necesitas saber las siguientes cosas:<br><br>
+                    <ul>
+                        <li>En la línea 26 de este mismo se encuentra <i>class <b>reportico_articulos</b> extends fs_controller {</i>, el <b>archivo deberá llamarse como la parte en negrita</b>, y el nombre deberá estar relacionado con tu informe y no existir.</li>
+                        <li>De la línea 28 a 36 hay 4 variables, <b>sólo debes modificar la parte derecha del =</b> para cambiar los textos que hay entre las comillas (simples o dobles). Las líneas con /// de encima, explican a que corresponde cada cosa.</li>
+                        <li>Una vez acabado, este archivo debes añadirlo a tu plugin reportico de FacturaScripts, concretamente en la siguiente ruta de tu carpeta de FacturaScripts: <b>{$fsc->paths[1]}</b></li>
+                        <li>Desactivar y volver a activar el plugin reportico, o activar tus páginas nuevas que habrá detectado tu FacturaScripts.</li>
+                        <li>Probar que los cambios funcionen correctamente.</li>
+                    </ul>
+
+                    <h3>Agradecimientos</h3>
+
+                    Agradecer a <b>Jorge L. Almendros</b> por haber compartido con nosotros lo que ha aprendido de Reportico para realizar este tutorial para todos los interesados y compartir sus reportes personales para incluirlos en este plugin de forma comunitaria.
+
+                    <h3>Compartir nos beneficia a todos</h3>
+
+                    Si este plugin y esta ayuda te han sido útiles y te has animado a realizar algún informe/reporte personalizados, no dudes en compartirlos con <a href="" target="_blank">la comunidad </a>. Porqué de la misma forma que a ti te ha podido ser útil, a otros también les podrá resultar interesante tenerlos y evitamos duplicar esfuerzos.<br/><br/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include="footer"}

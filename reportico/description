@@ -1,0 +1,33 @@
+Plugin para integrar Reportico con FacturaScripts, para permitir generar reportes e informes personalizados:
+
+<ul>
+   <li>
+      <strong>Reportes -> Opciones:</strong> Panel de configuración de Reportico, genera el config.php que necesita Reportico para funcionar con FacturaScripts.
+   </li>
+   <li>
+      <strong>Informe "Artículos ordenados por família":</strong> Genera una lista de artículos.
+   </li>
+   <li>
+      <strong>Informe "Adelantos de Pedidos de Clientes":</strong> Genera recibos de pagos totales o parciales en un pedido.
+   </li>
+   <li>
+      <strong>Informe "Presupuestos de Clientes":</strong> ¿?.
+   </li>
+   <li>
+      <strong>Informe "Pedidos de Clientes":</strong> ¿?.
+   </li>
+</ul>
+
+<br>
+
+<strong>Sugerencias en consideración:</strong>
+
+<ul>
+   <li>
+      Informes iniciales cortesía de Jorge L. Almendros.
+   </li>
+</ul>
+
+<strong>Apoya el plugin:</strong>
+
+Puedes apoyar el desarrollo del plugin sugiriendo y enviando cambios.

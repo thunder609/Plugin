@@ -1,0 +1,5 @@
+<h1>Plugin "beneficios"</h1>
+
+El plugin beneficios añade información en nueva_venta, ventas_presupuestos, ventas_pedidos, ventas_albaranes, ventas_facturas y editar_facturas sobre total neto, total coste y total beneficio (neto menos coste).
+Los beneficios de cada documento de venta se almacenan en la bdd cuando se guarda el documento. Si hay documentos previos a la instalación del plugin, se hará un cálculo sobre el precio ACTUAL del/los artículo/s en esos documentos.
+Si quieres disponer del cálculo real en documentos antiguos, puedes guardarlos uno a uno previa modificación del precio del/los artículo/s incluídos (recuerda volver a actualizar los precios de los artículos cuando hayas terminado).

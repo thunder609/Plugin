@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : detalles_servicios.xml
+    Description:
+        Estructura de la tabla detalles_servicios.
+-->
+<tabla>
+    <columna>
+        <nombre>id</nombre>
+        <tipo>serial</tipo>
+        <nulo>NO</nulo>
+        <defecto>nextval('detalles_servicios_id_seq'::regclass)</defecto>
+    </columna>
+    <columna>
+        <nombre>descripcion</nombre>
+        <tipo>text</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>idservicio</nombre>
+        <tipo>integer</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>fecha</nombre>
+        <tipo>date</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>hora</nombre>
+        <tipo>time without time zone</tipo>
+        <nulo>YES</nulo>
+        <defecto>now()</defecto>
+    </columna>
+    <columna>
+        <nombre>nick</nombre>
+        <tipo>character varying(12)</tipo>
+    </columna>
+    <restriccion>
+        <nombre>detalles_servicio_pkey</nombre>
+        <consulta>PRIMARY KEY (id)</consulta>
+    </restriccion>
+    <restriccion>
+        <nombre>ca_detalle_servicio</nombre>
+        <consulta>FOREIGN KEY (idservicio)
+            REFERENCES servicioscli (idservicio)
+            ON DELETE CASCADE ON UPDATE CASCADE</consulta>
+    </restriccion>
+</tabla>

@@ -1,0 +1,145 @@
+{include="header"}
+
+<div class="container-fluid">
+
+   <div class="row">
+      <div class="col-xs-9 text-left">
+         <div class="btn-group">
+            <a class="btn btn-sm btn-default" href="index.php?page=editar_amortizacion&id={$fsc->amortizacion->id_amortizacion}">
+               <span class="glyphicon glyphicon-arrow-left"></span>
+               <span class="hidden-xs hidden-sm">&nbsp;Amortización</span>
+            </a>
+         </div>
+      </div>
+   </div>
+   {if="$fsc->factura != null"}
+   
+   <div class="row">
+      <div class="col-sm-12">
+         <div class="page-header">
+            <h1>Venta de la amortización <small>{$fsc->amortizacion->descripcion} sobre la 
+                  factura {$fsc->factura->codigo} con fecha {$fsc->factura->fecha} para el cliente {$fsc->factura->nombrecliente}</small></h1>
+         </div>
+      </div>
+   </div>
+      
+   <div class="row">
+      <div class="col-sm-12">
+         <div class="panel panel-warning">
+            <div class="panel-heading">
+               <h3 class="panel-title">Aviso a la hora de vender un amortizado</h3>
+            </div>
+            <div class="panel-body">
+               En esta página se nos muestran todas las líneas correspondientes a la factura seleccionada.
+               <br/>
+               Lo unico que tenemos que hacer es, localizar la línea correspondiente y pinchar en el botón de la derecha, 
+               <b>Generar asiento de venta</b>.
+               <br/>
+               Y debería generarnos un asiento parecido a este.
+               <div class="row">
+                  <div class="col-md-6">
+                     <div class="table-responsive">
+                        <table class="table table-hover">
+                           <thead>
+                              <tr>
+                                 <td><b>Subcuenta + descripción</b></td>
+                                 <td width="100" class="text-right"><b>Debe</b></td>
+                                 <td width="100" class="text-right"><b>Haber</b></td>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr>
+                                 <td>2130000000 Maquinaria</td>
+                                 <td class="text-right">0.00 €</td>
+                                 <td class="text-right">10 000.00 €</td>
+                              </tr>
+                              <tr>
+                                 <td>2813000000 Amortización acumulada de maquinaria</td>
+                                 <td class="text-right">5 000.00 €</td>
+                                 <td class="text-right">0.00 €</td>
+                              </tr>
+                              <tr>
+                                 <td>7000000000 Venta de mercaderías</td>
+                                 <td class="text-right">6 000.00 €</td>
+                                 <td class="text-right">0.00 €</td>
+                              </tr>
+                              <tr>
+                                 <td>7710000000 Pérdidas Beneficios procedentes del inmovilizado material</td>
+                                 <td class="text-right">0.00 €</td>
+                                 <td class="text-right">1 000.00 €</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+                  
+            </div> 
+            </div>
+         </div>
+      </div>
+   </div>
+   
+   <div class="row">
+      <div class="col-sm-12">
+         <div class="panel panel-primary">
+            <div class="panel-heading">
+               <h3 class="panel-title">Elige la linea correspondiente a la venta del amortizado</h3>
+            </div>
+            <div class="panel-body">
+               <div class="table-responsive">
+                  <table class="table table-hover">
+                     <thead>
+                        <tr>
+                           <th width="150" style="min-width: 150px;">Referencia</th>
+                           <th style="min-width: 200px;">Descripción</th>
+                           <th width="150" class="text-right" style="min-width: 120px;">Precio</th>
+                           <th width="100" class="text-right" style="min-width: 80px;">Cantidad</th>
+                           <th width="150" class="text-right" style="min-width: 130px;">Fecha Inicio</th>
+                           <th width="100" class="text-right" style="min-width: 100px;"></th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {loop="$fsc->factura->get_lineas()"}
+                        <form action="index.php?page=amortizaciones&sale=true" method="post" class="form">
+                           <input name="id_linea" class="form-control hidden" value="{$fsc->ultima_linea->id_linea}"/>
+                           <input name="valor_ultima_linea" class="form-control hidden" value="{$fsc->valor_ultima_linea}"/>
+                           <input name="fecha_ultima_linea" class="form-control hidden" value="{$fsc->fecha_ultima_linea}"/>
+                           <input name="id_factura" class="form-control hidden" value="{$fsc->factura->idfactura}"/>
+                           <input name="amortizado" class="form-control hidden" value="{$fsc->amortizado}"/>
+                           <input name="id_amortizacion" class="form-control hidden" value="{$fsc->amortizacion->id_amortizacion}"/>
+                           <tr>
+                              <td>
+                                 <input class="form-control" name="referencia" value="{$value->referencia}" readonly/>
+                              </td>
+                              <td>
+                                 <input class="form-control" name="descripcion" value="{$value->descripcion}" readonly/>
+                              </td>
+                              <td class="text-right">
+                                 <input name="valor_venta" class="form-control text-right" value="{$value->pvpunitario}"/>
+                              </td>
+                              <td class="text-right">
+                                 <input name="cantidad" type="number" min="0" max="{$value->cantidad}" step="any" class="form-control text-right" value="{$value->cantidad}"/>
+                              </td>
+                              <td>
+                                 <input type="text" name="" value="{$fsc->factura->fecha}" class="form-control datepicker text-right" readonly/>
+                              </td>
+                              <td class="text-right">
+                                 <button type="submit" class="btn btn-sm btn-success">
+                                    Generar asiento de venta
+                                 </button>
+                              </td>
+                           </tr>
+                        </form>
+                        {/loop}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>   
+   {/if}
+   
+</div>
+
+{include="footer"}

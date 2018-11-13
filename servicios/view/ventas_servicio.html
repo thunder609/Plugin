@@ -1,0 +1,522 @@
+{include="header"}
+
+{if="$fsc->servicio"}
+{if="$fsc->servicio->editable()"}
+<script type="text/javascript" src="{$fsc->get_js_location('moment.js')}"></script>
+<script type="text/javascript" src="{$fsc->get_js_location('/locale/es.js')}"></script>
+<script type="text/javascript" src="{$fsc->get_js_location('bootstrap-datetimepicker.min.js')}"></script>
+<link rel="stylesheet" href="{#FS_PATH#}plugins/servicios/view/css/bootstrap-datetimepicker.min.css" />
+<script type="text/javascript" src="{$fsc->get_js_location('provincias.js')}"></script>
+<script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>
+<script type="text/javascript">
+   numlineas = {function="count($fsc->servicio->get_lineas())"};
+   fs_nf0 = {#FS_NF0#};
+   fs_nf0_art = {#FS_NF0_ART#};
+   all_impuestos = {function="json_encode($fsc->impuesto->all())"};
+   all_series = {function="json_encode($fsc->serie->all())"};
+   cliente = {function="json_encode($fsc->cliente_s)"};
+   nueva_venta_url = '{$fsc->nuevo_servicio_url}';
+   function check(id) {
+      if( $("#"+id).is(":checked") ) {
+         $("#checked_"+id).prop("disabled", false);
+      } else {
+         $("#checked_"+id).prop("disabled", true);
+      }
+   };
+   $(document).ready( function() {
+      $('#numlineas').val(numlineas);
+      usar_serie();
+      recalcular();
+      $('#ac_cliente').autocomplete({
+         serviceUrl: nueva_venta_url,
+         paramName: 'buscar_cliente',
+         onSelect: function(suggestion) {
+            if(suggestion) {
+               if(document.f_servicio.cliente.value != suggestion.data && suggestion.data != '') {
+                  document.f_servicio.cliente.value = suggestion.data;
+                  usar_cliente(suggestion.data);
+               }
+            }
+         }
+      });
+   });
+</script>
+{/if}
+<script type="text/javascript">
+   function show_tab_grupos() {
+      $('#tabs_servicio a:first').tab('show');
+   }
+   $(document).ready( function() {
+      $('#b_imprimir').click( function(event) {
+         event.preventDefault();
+         $('#modal_imprimir_servicio').modal('show');
+      });
+      $('#b_enviar').click( function(event) {
+         event.preventDefault();
+         $('#modal_enviar').modal('show');
+         document.enviar_email.email.select();
+      });
+      $('#b_eliminar').click( function(event) {
+         event.preventDefault();
+         $('#modal_eliminar').modal('show');
+      });
+      
+      {if="$fsc->servicio->totalrecargo==0"}
+      $('.recargo').hide();
+      {/if}
+      {if="$fsc->servicio->totalirpf==0"}
+      $('.irpf').hide();
+      {/if}
+      
+      moment.locale('es');
+      $('#fechainicio').datetimepicker({
+         locale: 'es',
+         format: 'DD-MM-YYYY HH:mm',
+         defaultDate: new Date(),
+      });
+      $('#fechafin').datetimepicker({
+         locale: 'es',
+         format: 'DD-MM-YYYY HH:mm',
+         defaultDate: moment().add({$fsc->setup['servicios_diasfin']}, 'days').toDate(),
+      });
+      $('#fechainicio').change(
+              function(){
+                 var fecha = moment(this.value,'DD-MM-YYYY HH:mm');
+                 fecha.add({$fsc->setup['servicios_diasfin']}, 'days').calendar();
+                 $('#fechafin').val(fecha.format('DD-MM-YYYY HH:mm'));
+         }
+      );
+      
+      if(window.location.hash.substring(1) == 'detalles')
+      {
+         $('#tabs_servicio a[href="#detalles"]').tab('show');
+      }
+   });
+</script>
+
+<form name="f_servicio" action="{$fsc->servicio->url()}" method="post" class="form">
+   <input type="hidden" name="idservicio" value="{$fsc->servicio->idservicio}"/>
+   <input type="hidden" name="cliente" value="{$fsc->servicio->codcliente}"/>
+   <input type="hidden" id="numlineas" name="numlineas" value="0"/>
+   <div class="container-fluid">
+      <div class="row">
+         <div class="col-md-8 col-sm-8 col-xs-8">
+            <div class="btn-group hidden-xs">
+               <a class="btn btn-sm btn-default" href="index.php?page=ventas_servicios">
+                  <span class="glyphicon glyphicon-arrow-left"></span>
+                  <span class="hidden-xs">&nbsp;Volver</span>
+               </a>
+               <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
+                  <span class="glyphicon glyphicon-refresh"></span>
+               </a>
+            </div>
+            <div class="btn-group">
+               <a id="b_imprimir" class="btn btn-sm btn-default" href="#">
+                  <span class="glyphicon glyphicon-print"></span>
+                  <span class="hidden-xs">&nbsp;Imprimir</span>
+               </a>
+               {if="$fsc->empresa->can_send_mail()"}
+               <a id="b_enviar" class="btn btn-sm btn-default" href="#">
+                  <span class="glyphicon glyphicon-envelope"></span>
+                  {if="$fsc->servicio->femail"}
+                  <span class="hidden-xs">&nbsp;Reenviar</span>
+                  {else}
+                  <span class="hidden-xs">&nbsp;Enviar</span>
+                  {/if}
+               </a>
+               {/if}
+               {loop="$fsc->extensions"}
+                  {if="$value->type=='button'"}
+                  <a href="index.php?page={$value->from}&id={$fsc->servicio->idservicio}{$value->params}" class="btn btn-sm btn-default">{$value->text}</a>
+                  {elseif="$value->type=='modal'"}
+                  <!--{$txt=base64_encode($value->text)}-->
+                  <!--{$url='index.php?page='.$value->from.'&id='.$fsc->servicio->idservicio.$value->params}-->
+                  <a href="#" class="btn btn-sm btn-default" onclick="fs_modal('{$txt}','{$url}')">{$value->text}</a>
+                  {/if}
+               {/loop}
+            </div>
+            {if="$fsc->servicio->idalbaran"}
+            <div class="btn-group">
+               <a class="btn btn-sm btn-info text-capitalize" href="index.php?page=ventas_albaran&id={$fsc->servicio->idalbaran}" target="_blank"/>
+                  <span class="glyphicon glyphicon-eye-open"></span>
+                  <span class="hidden-xs"> &nbsp; Ver {#FS_ALBARAN#}</span>
+               </a>
+            </div>
+            {else}
+            <div class="btn-group">
+               <a class="btn btn-sm btn-success text-capitalize" href="{$fsc->servicio->url()}&genalbaran=TRUE">
+                  <span class="glyphicon glyphicon glyphicon-new-window"></span>
+                  <span class="hidden-xs"> &nbsp; Generar {#FS_ALBARAN#}</span>
+               </a>
+            </div>
+            {/if}
+            {if="$fsc->historico"}
+               <a href="#" class="btn btn-sm btn-default" data-toggle="modal" data-target="#modal_historico" title="Historial del {#FS_SERVICIO#}">
+                  <i class="fa fa-book" aria-hidden="true"></i>
+               </a>
+            {/if}
+         </div>
+         <div class="col-md-4 col-sm-4 col-xs-4 text-right">
+            <a class="btn btn-sm btn-success" href="index.php?page=nuevo_servicio">
+               <span class="glyphicon glyphicon-plus"></span>
+            </a>
+            <div class="btn-group">
+               {if="$fsc->allow_delete"}
+               <a id="b_eliminar" class="btn btn-sm btn-danger" href="#">
+                  <span class="glyphicon glyphicon-trash"></span>
+                  <span class="hidden-xs hidden-sm">&nbsp;Eliminar</span>
+               </a>
+               {/if}
+               <button class="btn btn-sm btn-primary" type="submit" onclick="show_tab_grupos()">
+                  <span class="glyphicon glyphicon-floppy-disk"></span>
+                  <span class="hidden-xs">&nbsp;Guardar</span>
+               </button>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-8">
+            <br/>
+            <ol class="breadcrumb" style="margin-bottom: 5px;">
+               <li><a href="{$fsc->ppage->url()}">Ventas</a></li>
+               <li><a href="{$fsc->ppage->url()}">{#FS_SERVICIOS#}</a></li>
+               <li>
+                  <a href="{$fsc->servicio->cliente_url()}">{$fsc->servicio->nombrecliente}</a>
+               </li>
+               {if="$fsc->cliente_s"}
+                  {if="$fsc->cliente_s->nombre!=$fsc->servicio->nombrecliente"}
+                  <li>
+                     <a href="#" onclick="alert('Cliente conocido como: {$fsc->cliente_s->nombre}')">
+                        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                     </a>
+                  </li>
+                  {/if}
+               {/if}
+               <li class="active"><b>{$fsc->servicio->codigo}</b></li>
+            </ol>
+            <p class="help-block">
+               {if="$fsc->agente"}
+               <span class="text-capitalize">{#FS_SERVICIO#}</span> creado por
+               <a href="{$fsc->agente->url()}">{$fsc->agente->get_fullname()}</a>.
+               {else}
+               Sin datos de qué empleado ha creado este {#FS_SERVICIO#}.
+               {/if}
+            </p>
+         </div>
+         <br/>
+         <div class='col-md-4'>
+            {if="$fsc->cliente_s"}
+            <ol class="breadcrumb" style="margin-bottom: 5px;">
+               <li class="active"><b>Teléfonos:</b></li>
+               <li>{$fsc->cliente_s->telefono1}</li>
+               <li>{$fsc->cliente_s->telefono2}</li>
+            </ol>
+            {/if}
+         </div>
+      </div>
+      <div class="row">
+         {if="$fsc->servicio->editable() AND !$fsc->servicio->idalbaran"}
+         <div class="col-md-2 col-sm-12">
+            <div class="form-group">
+               Cliente actual:
+               <div class="input-group">
+                  <input class="form-control" type="text" name="ac_cliente" id="ac_cliente" value="{$fsc->servicio->nombrecliente}" placeholder="Buscar" autocomplete="off"/>
+                  <span class="input-group-btn">
+                     <button class="btn btn-default" type="button" onclick="document.f_servicio.ac_cliente.value = '';document.f_servicio.ac_cliente.focus();">
+                        <span class="glyphicon glyphicon-edit"></span>
+                     </button>
+                  </span>
+               </div>
+            </div>
+         </div>
+         {else}
+         <div class="col-md-2 col-sm-12">
+            <div class="form-group">
+               Cliente actual:
+               <div class="input-group">
+                  <input class="form-control" type="text" name="" value="{$fsc->servicio->nombrecliente}" readonly/>
+               </div>
+            </div>
+         </div>
+         {/if}
+         <div class="col-md-2 col-sm-2">
+            <div class="form-group">
+               <span class='text-capitalize'>{#FS_NUMERO2#}:</span>
+               <input class="form-control" type="text" name="numero2" value="{$fsc->servicio->numero2}"{if="!$fsc->servicio->editable()"} disabled=""{/if}/>
+            </div>
+         </div>
+         <div class="col-md-2 col-sm-3">
+            <div class="form-group">
+               <a href="index.php?page=opciones_servicios#estados" target="_blank">Estado</a>:
+               <select name="estado" class="form-control" onchange="this.form.submit()">
+                  {loop="$fsc->estado->all()"}
+                  <option value="{$value->id}"{if="$value->id==$fsc->servicio->idestado"} selected=""{/if}>{$value->descripcion}</option>
+                  {/loop}
+               </select>
+            </div>
+         </div>
+         <div class="col-md-2 col-sm-2">
+            <div class="form-group">
+               <a href="{$fsc->agente->url()}">Empleado</a>:
+               <select name="codagente" class="form-control"{if="!$fsc->servicio->editable()"} readonly=""{/if}>
+                  <option value="{$fsc->agente->codagente}">{$fsc->agente->get_fullname()}</option>
+                  {if="$fsc->user->admin"}
+                  <option value="{$fsc->agente->codagente}">-----</option>
+                  {loop="$fsc->agente->all()"}
+                  <option value="{$value->codagente}">{$value->get_fullname()}</option>
+                  {/loop}
+                  {/if}
+               </select>
+            </div>
+         </div>
+         <div class="col-md-2 col-sm-3">
+            <div class="form-group">
+               Fecha:
+               {if="$fsc->servicio->editable()"}
+               <input class="form-control datepicker" type="text" name="fecha" value="{$fsc->servicio->fecha}" autocomplete="off"/>
+               {else}
+               <div class="form-control">{$fsc->servicio->fecha}</div>
+               {/if}
+            </div>
+         </div>
+         <div class="col-md-2 col-sm-2">
+            <div class="form-group">
+               Hora:
+               {if="$fsc->servicio->editable()"}
+               <input class="form-control" type="text" name="hora" value="{$fsc->servicio->hora}" autocomplete="off"/>
+               {else}
+               <div class="form-control">{$fsc->servicio->hora}</div>
+               {/if}
+            </div>
+         </div>
+      </div>
+   </div>
+   <div role="tabpanel">
+      <ul id="tabs_servicio" class="nav nav-tabs" role="tablist">
+         <li role="presentation" class="active">
+            <a href="#servicio" aria-controls="servicio" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp;{$fsc->setup['st_servicios']}</span>
+            </a>
+         </li>
+         <li role="presentation">
+            <a href="#lineas_p" aria-controls="lineas_p" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp;Líneas</span>
+            </a>
+         </li>
+         <li role="presentation">
+            <a href="#datos" aria-controls="datos" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-eur" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp;Datos</span>
+            </a>
+         </li>
+         <li>
+            <a href="#detalles" aria-controls="detalles" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp;Detalles</span>
+               <span class="hidden-sm badge">{$fsc->servicio->num_detalles()}</span>
+            </a>
+        </li>
+        {loop="$fsc->extensions"}
+            {if="$value->type=='tab'"}
+            <li role="presentation">
+               <a href="#ext_{$value->name}" aria-controls="ext_{$value->name}" role="tab" data-toggle="tab">{$value->text}</a>
+            </li>
+            {/if}
+         {/loop}
+      </ul>
+   </div>
+   <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="servicio">
+         <div class="container-fluid" style="margin-top: 10px;">   
+            <div class="row">
+               {if="$fsc->setup['servicios_mostrar_material']"}
+               <div class="col-sm-4">
+                  <div class="form-group{if="$fsc->setup['servicios_material']"} has-error{/if}">
+                     {$fsc->setup['st_material']}
+                     <textarea class="form-control" name="material" rows="2" {if="$fsc->setup['servicios_material']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->material}</textarea>
+                  </div>
+               </div>
+ {/if}
+                {if="$fsc->setup['servicios_mostrar_marca']"}
+               <div class="col-sm-4">
+                  <div class="form-group{if="$fsc->setup['servicios_m']"} has-error{/if}">
+                     {$fsc->setup['st_marca']}
+                     <textarea class="form-control" name="modal_buscar_articulo" rows="2" {if="$fsc->setup['servicios_material_estado']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->marca}</textarea>
+                  </div>
+               </div>
+               {/if}
+
+                    {if="$fsc->setup['servicios_mostrar_modelo']"}
+               <div class="col-sm-4">
+                  <div class="form-group{if="$fsc->setup['servicios_modelo']"} has-error{/if}">
+                     {$fsc->setup['st_modelo']}
+                     <textarea class="form-control" name="modal_buscar_articulo" rows="2" {if="$fsc->setup['servicios_modelo']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->modelo}</textarea>
+                  </div>
+               </div>
+               {/if}
+                  {if="$fsc->setup['servicios_mostrar_serial']"}
+               <div class="col-sm-4">
+                  <div class="form-group{if="$fsc->setup['servicios_serial']"} has-error{/if}">
+                     {$fsc->setup['st_serial']}
+                     <textarea class="form-control" name="modal_buscar_articulo" rows="2" {if="$fsc->setup['servicios_serial']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->serial}</textarea>
+                  </div>
+               </div>
+               {/if}
+               {if="$fsc->setup['servicios_mostrar_material_estado']"}
+               <div class="col-sm-4">
+                  <div class="form-group{if="$fsc->setup['servicios_material_estado']"} has-error{/if}">
+                     {$fsc->setup['st_material_estado']}
+                     <textarea class="form-control" name="material_estado" rows="2" {if="$fsc->setup['servicios_material_estado']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->material_estado}</textarea>
+                  </div>
+               </div>
+               {/if}                
+                         
+               {if="$fsc->setup['servicios_mostrar_accesorios']"}
+               <div class="col-sm-4">
+                  <div class="form-group{if="$fsc->setup['servicios_accesorios']"} has-error{/if}">
+                     {$fsc->setup['st_accesorios']}
+                     <textarea class="form-control" name="accesorios" rows="2" {if="$fsc->setup['servicios_accesorios']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->accesorios}</textarea>
+                  </div>
+               </div>
+               {/if}
+            </div>            
+            <div class="row">
+               {if="$fsc->setup['servicios_mostrar_descripcion']"}
+               <div class="col-sm-6">
+                  <div class="form-group{if="$fsc->setup['servicios_descripcion']"} has-error{/if}">
+                     {$fsc->setup['st_descripcion']}
+                     <textarea class="form-control" name="descripcion" rows="4" {if="$fsc->setup['servicios_descripcion']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->descripcion}</textarea>
+                  </div>
+               </div>
+               {/if}
+               {if="$fsc->setup['servicios_mostrar_solucion']"}
+               <div class="col-sm-6">
+                  <div class="form-group{if="$fsc->setup['servicios_solucion']"} has-error{/if}">
+                     {$fsc->setup['st_solucion']}
+                     <textarea class="form-control" name="solucion" rows="4" {if="$fsc->setup['servicios_solucion']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->solucion}</textarea>
+                  </div>
+               </div>
+               {/if}
+            </div>    
+            <div class="row">
+               {if="$fsc->setup['servicios_mostrar_fechainicio']"}
+               <div class='col-sm-3'>
+                  <div class="form-group{if="$fsc->setup['servicios_fechainicio']"} has-error{/if}">
+                     {$fsc->setup['st_fechainicio']}
+                     <div class='input-group'>
+                        <span class="input-group-addon">
+                           <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        <input type='text' name="fechainicio" value="{$fsc->servicio->fechainicio}" id="fechainicio" class="form-control"{if="$fsc->setup['servicios_fechainicio']"} required=""{/if}{if="!$fsc->servicio->editable()"} disabled=""{/if}/>
+                     </div>
+                  </div>
+               </div>   
+               {/if}  
+               {if="$fsc->setup['servicios_mostrar_fechafin']"}
+               <div class='col-sm-3'>
+                  <div class="form-group{if="$fsc->setup['servicios_fechafin']"} has-error{/if}">
+                     {$fsc->setup['st_fechafin']}
+                     <div class='input-group'>
+                        <span class="input-group-addon">
+                           <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        <input type="text" name="fechafin" value="{$fsc->servicio->fechafin}" id="fechafin" class="form-control"{if="$fsc->setup['servicios_fechafin']"} required=""{/if}{if="!$fsc->servicio->editable()"} disabled=""{/if}/>
+                     </div>
+                  </div>
+               </div>
+               {/if}
+               {if="$fsc->setup['servicios_mostrar_garantia']"}
+               <div class="col-sm-2">
+                  <div class="checkbox">
+                     <label>
+                        <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked=""{/if}{if="!$fsc->servicio->editable()"} disabled=""{/if}/>
+                        {$fsc->setup['st_garantia']}
+                     </label>
+                  </div>
+               </div>
+               {/if}
+               <div class="col-sm-2">
+                  <div class="form-group">
+                     Prioridad:
+                     <select name="prioridad" class="form-control"{if="!$fsc->servicio->editable()"} disabled=""{/if}>
+                        {loop="$fsc->servicio->listar_prioridad()"}
+                        <option value="{$value['id_prioridad']}"{if="$value['id_prioridad'] == $fsc->servicio->prioridad"} selected=""{/if}>{$value['nombre_prioridad']}</option>
+                        {/loop}
+                     </select>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-sm-12">
+                  <div class="form-group">
+                     Observaciones:
+                     <textarea class="form-control" name="observaciones" rows="7">{$fsc->servicio->observaciones}</textarea>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="lineas_p">
+         {include="block/ventas_servicio_lineas"}
+      </div>
+      <div role="tabpanel" class="tab-pane" id="datos">
+         {include="block/ventas_servicio_datos"}
+      </div>
+      <div role="tabpanel" class="tab-pane" id="detalles">
+         <div class="table-responsive">
+            <table class="table table-hover">
+               <thead>
+                  <tr>
+                     <th class="text-left">Usuario</th>
+                     <th class="text-left">Detalle</th>
+                     <th class="text-right">Fecha | Hora &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                     <th></th>
+                  </tr>
+               </thead>
+               {loop="fsc->listar_servicio_detalle()"}
+               <tr>
+                  <td>{$value->nick}</td>
+                  <td>{$value->descripcion}</td>
+                  <td class="text-right">{$value->fecha} | {$value->show_hora_detalle()}</td>
+                  <td>
+                     {if="$fsc->allow_delete"}
+                     <a href="{$fsc->servicio->url()}&delete_detalle={$value->id}#detalles"onClick="return confirm('¿Seguro que quieres eliminar este detalle?')">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                     </a>
+                     {/if}
+                  </td>
+               </tr>
+               {/loop}
+               <tr>
+                  <td colspan="4">
+                     <a href='#' class="btn btn-info btn-block btn-sm" data-toggle="modal" data-target="#modal_nuevo_detalle">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        &nbsp; Nuevo detalle
+                     </a>
+                  </td>
+               </tr>
+            </table>
+         </div>
+      </div>     
+      {loop="$fsc->extensions"}
+         {if="$value->type=='tab'"}
+         <div role="tabpanel" class="tab-pane" id="ext_{$value->name}">
+            <iframe src="index.php?page={$value->from}{$value->params}&id={$fsc->servicio->idservicio}" width="100%" height="2000" frameborder="0"></iframe>
+         </div>
+         {/if}
+      {/loop}
+   </div>
+</form>
+
+{include="block/modal_buscar_articulo"}
+{include="block/ventas_servicio_modals"}
+
+{else}
+<div class="text-center">
+   <img src="{#FS_PATH#}view/img/fuuu_face.png" alt="fuuuuu"/>
+</div>
+{/if}
+
+{include="footer"}

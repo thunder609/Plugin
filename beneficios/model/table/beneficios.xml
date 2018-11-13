@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : beneficios.xml
+    Description:
+        Estructura de la tabla beneficios.
+-->
+<tabla>
+    <columna>
+        <nombre>id</nombre>
+        <tipo>serial</tipo>
+        <nulo>NO</nulo>
+        <defecto>nextval('beneficios_id_seq'::regclass)</defecto>
+    </columna>
+    <columna>
+        <nombre>codigo_pre</nombre>
+        <tipo>character varying(20)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>codigo_ped</nombre>
+        <tipo>character varying(20)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>codigo_alb</nombre>
+        <tipo>character varying(20)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>codigo_fac</nombre>
+        <tipo>character varying(20)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>precioneto</nombre>
+        <tipo>double precision</tipo>
+        <nulo>YES</nulo>
+        <defecto>0</defecto>
+    </columna>
+    <columna>
+        <nombre>preciocoste</nombre>
+        <tipo>double precision</tipo>
+        <nulo>YES</nulo>
+        <defecto>0</defecto>
+    </columna>
+    <columna>
+        <nombre>beneficio</nombre>
+        <tipo>double precision</tipo>
+        <nulo>YES</nulo>
+        <defecto>0</defecto>
+    </columna>
+    <restriccion>
+        <nombre>beneficios_pkey</nombre>
+        <consulta>PRIMARY KEY (id)</consulta>
+    </restriccion>
+    <restriccion>
+        <nombre>ca_codigo_pre</nombre>
+        <consulta>FOREIGN KEY (codigo_pre)
+            REFERENCES presupuestoscli (codigo)
+            ON DELETE CASCADE ON UPDATE CASCADE</consulta>
+    </restriccion>
+    <restriccion>
+      <nombre>uniq_codigo_pre</nombre>
+      <consulta>UNIQUE (codigo_pre)</consulta>
+   </restriccion>
+    <restriccion>
+        <nombre>ca_codigo_ped</nombre>
+        <consulta>FOREIGN KEY (codigo_ped)
+            REFERENCES pedidoscli (codigo)
+            ON DELETE CASCADE ON UPDATE CASCADE</consulta>
+    </restriccion>
+    <restriccion>
+      <nombre>uniq_codigo_ped</nombre>
+      <consulta>UNIQUE (codigo_ped)</consulta>
+   </restriccion>
+    <restriccion>
+        <nombre>ca_codigo_alb</nombre>
+        <consulta>FOREIGN KEY (codigo_alb)
+            REFERENCES albaranescli (codigo)
+            ON DELETE CASCADE ON UPDATE CASCADE</consulta>
+    </restriccion>
+    <restriccion>
+      <nombre>uniq_codigo_alb</nombre>
+      <consulta>UNIQUE (codigo_alb)</consulta>
+   </restriccion>
+    <restriccion>
+        <nombre>ca_codigo_fac</nombre>
+        <consulta>FOREIGN KEY (codigo_fac)
+            REFERENCES facturascli (codigo)
+            ON DELETE CASCADE ON UPDATE CASCADE</consulta>
+    </restriccion>
+    <restriccion>
+      <nombre>uniq_codigo_fac</nombre>
+      <consulta>UNIQUE (codigo_fac)</consulta>
+   </restriccion>
+</tabla>

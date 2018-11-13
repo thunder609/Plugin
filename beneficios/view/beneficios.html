@@ -1,0 +1,34 @@
+<table class="table table-hover" style="table-layout:fixed; width: 90%; margin-left:auto; margin-right:auto;">
+    <thead>
+    <tr class="text-info">
+        <th>Total neto</th>
+        <th>Total coste</th>
+        <th>Total beneficio</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td id="b_neto">{$fsc->show_precio($fsc->total_neto, $fsc->empresa->coddivisa)}</td>
+        <td id="b_coste">{$fsc->show_precio($fsc->total_coste, $fsc->empresa->coddivisa)}</td>
+        <td id="b_beneficio">{$fsc->show_precio($fsc->total_beneficio, $fsc->empresa->coddivisa)}</td>
+    </tr>
+    {if="$fsc->test_mode==true"}
+    <tr>
+        <td colspan="3" class="text-warning"><b>MODO TEST ACTIVADO</b></td>
+    </tr>
+    <tr>
+        <td colspan="3" style="word-wrap: break-word;">{$fsc->test}</td>
+    </tr>
+    <tr>
+        <td colspan="3" style="word-wrap: break-word;">{$fsc->test2}</td>
+    </tr>
+    {/if}
+    </tbody>
+</table>
+<div class="alert">
+    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+    Para realizar un cálculo real de los beneficios, es necesario tener precio de coste asignado a los artículos!
+    <br/>
+    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+    Los beneficios visibles en los listados solo tienen en cuenta los documentos mostrados en pantalla.
+</div>

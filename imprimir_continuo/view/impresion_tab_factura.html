@@ -1,0 +1,92 @@
+{include="header2"}
+
+{if="$fsc->factura"}
+<script type="text/javascript">
+   $(document).ready(function() {
+      window.print();
+      setTimeout(function () { window.close(); }, 100);
+   });
+</script>
+
+<div class="containter-fluid">
+   <div class="row">
+      <div class="col-xs-6">
+         <h4>Factura:</h4>
+         {if="$fsc->factura->numero2"}
+         <b>{$fsc->factura->numero2}</b>
+         {else}
+         <b>{$fsc->factura->codigo}</b>
+         {/if}
+         <h4>Cliente:</h4>
+         {$fsc->factura->nombrecliente}<br/>
+         {#FS_CIFNIF#}: {$fsc->factura->cifnif}<br/>
+         {$fsc->factura->direccion}
+         {if="$fsc->factura->codpostal"}CP: {$fsc->factura->codpostal}{/if}
+         {$fsc->factura->ciudad}, {$fsc->factura->provincia}
+      </div>
+      <div class="col-xs-6 text-right">
+         <h4>{$fsc->empresa->nombre}</h4>
+         {#FS_CIFNIF#}: {$fsc->empresa->cifnif}<br/>
+         {$fsc->empresa->direccion}
+         {if="$fsc->empresa->codpostal"}CP: {$fsc->empresa->codpostal}{/if}
+         {$fsc->empresa->ciudad}, {$fsc->empresa->provincia}<br/>
+         {if="$fsc->empresa->telefono"}Tlf: {$fsc->empresa->telefono}{/if}
+         {if="$fsc->empresa->web"}{$fsc->empresa->web}{/if}
+         {if="$fsc->empresa->email"}{$fsc->empresa->email}{/if}
+      </div>
+   </div>
+</div>
+
+<br/>
+<br/>
+
+<table class="table table-condensed">
+   <thead>
+      <tr>
+         <th>Artículo</th>
+         <th class="text-right">Cantidad</th>
+         <th class="text-right">Precio</th>
+         <th class="text-right">Dto.</th>
+         <th class="text-right">Total</th>
+      </tr>
+   </thead>
+   {loop="$fsc->factura->get_lineas()"}
+   <tr>
+      <td>x{$value->descripcion} {$fsc->generar_trazabilidad($value->idlinea)}</td>
+      <td class="text-right">{$fsc->show_numero($value->cantidad)}</td>
+      <td class="text-right">{$fsc->show_numero($value->pvpunitario)}</td>
+      <td class="text-right">
+         {if="$value->dtopor!=0"}{$fsc->show_numero($value->dtopor)}%{/if}
+      </td>
+      <td class="text-right">{$fsc->show_numero($value->pvptotal)}</td>
+   </tr>
+   {/loop}
+</table>
+
+{if="$fsc->factura->observaciones"}
+<h4>Observaciones:</h4>
+<p>{$fsc->factura->observaciones}</p>
+{/if}
+
+<table class="table table-condensed">
+   <thead>
+      <tr>
+         <th>Forma de pago</th>
+         <th class="text-right">Neto</th>
+         <th class="text-right">{#FS_IVA#}</th>
+         <th class="text-right">Total</th>
+      </tr>
+   </thead>
+   <tr>
+      <td>{$fsc->factura->codpago}</td>
+      <td class="text-right">{$fsc->show_precio($fsc->factura->neto, $fsc->factura->coddivisa)}</td>
+      <td class="text-right">{$fsc->show_precio($fsc->factura->totaliva, $fsc->factura->coddivisa)}</td>
+      <td class="text-right">{$fsc->show_precio($fsc->factura->total, $fsc->factura->coddivisa)}</td>
+   </tr>
+</table>
+
+{else}
+<div class="alert alert-danger">Factura no encontrada.</div>
+{/if}
+
+{include="footer2"}

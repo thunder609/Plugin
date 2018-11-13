@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : servicioscli.xml
+    Description:
+        Estructura de la tabla servicioscli.
+-->
+<tabla>
+    <columna>
+        <nombre>apartado</nombre>
+        <tipo>character varying(10)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>prioridad</nombre>
+        <tipo>integer</tipo>
+    </columna>
+    <columna>
+        <nombre>cifnif</nombre>
+        <tipo>character varying(30)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>ciudad</nombre>
+        <tipo>character varying(100)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>codagente</nombre>
+        <tipo>character varying(10)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>codalmacen</nombre>
+        <tipo>character varying(4)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>codcliente</nombre>
+        <tipo>character varying(6)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>coddir</nombre>
+        <tipo>integer</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>coddivisa</nombre>
+        <tipo>character varying(3)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>codejercicio</nombre>
+        <tipo>character varying(4)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>codigo</nombre>
+        <tipo>character varying(20)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>codpago</nombre>
+        <tipo>character varying(10)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>codpais</nombre>
+        <tipo>character varying(20)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>codpostal</nombre>
+        <tipo>character varying(10)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>codserie</nombre>
+        <tipo>character varying(2)</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>direccion</nombre>
+        <tipo>character varying(100)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>editable</nombre>
+        <tipo>boolean</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>garantia</nombre>
+        <tipo>boolean</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>fecha</nombre>
+        <tipo>date</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>hora</nombre>
+        <tipo>time without time zone</tipo>
+        <nulo>YES</nulo>
+        <defecto>now()</defecto>
+    </columna>
+    <columna>
+        <nombre>femail</nombre>
+        <tipo>date</tipo>
+    </columna>
+    <columna>
+        <nombre>fechafin</nombre>
+        <tipo>date</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>horafin</nombre>
+        <tipo>time without time zone</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>fechainicio</nombre>
+        <tipo>date</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>horainicio</nombre>
+        <tipo>time without time zone</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>idservicio</nombre>
+        <tipo>serial</tipo>
+        <nulo>NO</nulo>
+        <defecto>nextval('servicioscli_idservicio_seq'::regclass)</defecto>
+    </columna>
+    <columna>
+        <nombre>idalbaran</nombre>
+        <tipo>integer</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>idprovincia</nombre>
+        <tipo>integer</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>irpf</nombre>
+        <tipo>double precision</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>neto</nombre>
+        <tipo>double precision</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>nombrecliente</nombre>
+        <tipo>character varying(100)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>numero</nombre>
+        <tipo>character varying(12)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>numero2</nombre>
+        <tipo>character varying(50)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>observaciones</nombre>
+        <tipo>text</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>descripcion</nombre>
+        <tipo>text</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>solucion</nombre>
+        <tipo>text</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>material</nombre>
+        <tipo>text</tipo>
+        <nulo>YES</nulo>
+      </columna>
+    <columna>
+             <nombre>marca</nombre>
+        <tipo>text</tipo>
+        <nulo>YES</nulo>
+      </columna>
+    <columna>
+             <nombre>modelo</nombre>
+        <tipo>text</tipo>
+        <nulo>YES</nulo>
+      </columna>
+    <columna>
+               <nombre>serial</nombre>
+        <tipo>text</tipo>
+        <nulo>YES</nulo>
+      </columna>
+    <columna>
+        <nombre>material_estado</nombre>
+        <tipo>text</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>accesorios</nombre>
+        <tipo>text</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>porcomision</nombre>
+        <tipo>double precision</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>provincia</nombre>
+        <tipo>character varying(100)</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>recfinanciero</nombre>
+        <tipo>double precision</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>tasaconv</nombre>
+        <tipo>double precision</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>total</nombre>
+        <tipo>double precision</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>totaleuros</nombre>
+        <tipo>double precision</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>totalirpf</nombre>
+        <tipo>double precision</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>totaliva</nombre>
+        <tipo>double precision</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>totalrecargo</nombre>
+        <tipo>double precision</tipo>
+        <nulo>YES</nulo>
+    </columna>
+    <columna>
+        <nombre>idestado</nombre>
+        <tipo>integer</tipo>
+    </columna>
+    <columna>
+        <nombre>numdocs</nombre>
+        <tipo>integer</tipo>
+        <defecto>0</defecto>
+    </columna>
+    <restriccion>
+        <nombre>servicioscli_pkey</nombre>
+        <consulta>PRIMARY KEY (idservicio)</consulta>
+    </restriccion>
+    <restriccion>
+        <nombre>ca_servicioscli_series</nombre>
+        <consulta>FOREIGN KEY (codserie)
+            REFERENCES series (codserie)
+            ON DELETE RESTRICT ON UPDATE CASCADE</consulta>
+    </restriccion>
+    <restriccion>
+        <nombre>ca_servicioscli_ejercicios</nombre>
+        <consulta>FOREIGN KEY (codejercicio)
+            REFERENCES ejercicios (codejercicio)
+            ON DELETE RESTRICT ON UPDATE CASCADE</consulta>
+    </restriccion>
+    <restriccion>
+        <nombre>ca_servicios_albaranescli</nombre>
+        <consulta>FOREIGN KEY (idalbaran)
+            REFERENCES albaranescli (idalbaran)
+            ON DELETE SET NULL ON UPDATE CASCADE</consulta>
+    </restriccion>
+    <restriccion>
+        <nombre>uniq_codigo_servicioscli</nombre>
+        <consulta>UNIQUE (codigo)</consulta>
+    </restriccion>
+</tabla>

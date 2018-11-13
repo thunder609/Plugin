@@ -1,0 +1,231 @@
+{include="header2"}
+<script type="text/javascript">
+	alert("Recuerda que debes imprimir en horizontal!");
+	window.print();
+</script>
+<div class="col-xs-6 text-right">
+         <h10>{$fsc->empresa->nombre}</h10>
+         {#FS_CIFNIF#}: {$fsc->empresa->cifnif}<br/>
+         {$fsc->empresa->direccion}
+         {if="$fsc->empresa->telefono"}Tlf: {$fsc->empresa->telefono}{/if}
+             </div>
+             <div class="col-xs-6 text-left">
+         <h10>{$fsc->empresa->nombre}</h10>
+         {#FS_CIFNIF#}: {$fsc->empresa->cifnif}<br/>
+         {$fsc->empresa->direccion}
+         {if="$fsc->empresa->telefono"}Tlf: {$fsc->empresa->telefono}{/if}
+             </div>
+{if="$fsc->servicio"}
+<div class="container-fluid">
+	<!-- Media Página 1 -->
+	<div class="row">
+		<div class="col-xs-6">
+			<div class="row" style="font-size:85%">
+				<div class="col-xs-12">
+					<div class="col-xs-6">
+						<h09><strong>{$fsc->setup['st_servicio']}: </strong>{$fsc->servicio->codigo}<br/></h09>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-6">
+						<strong>Fecha:</strong> {$fsc->servicio->fecha}<br/>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-6">
+						<strong>Hora:</strong> {$fsc->servicio->hora}
+					</div>
+				</div>
+				<div class="col-xs-12"><br/>
+					<div class="col-xs-4">
+						<strong>Nombre:</strong><br/>{$fsc->servicio->nombrecliente}
+					</div>
+					<div class="col-xs-4">
+						<strong>Teléfono fijo:</strong><br/>
+                  {if="$fsc->cliente"}{$fsc->cliente->telefono1}{/if}
+					</div>
+					<div class="col-xs-4">
+						<strong>Cedula:</strong><br/>
+                  {if="$fsc->cliente"}{$fsc->cliente->cifnif}{/if}
+					</div>
+				</div>
+				<div class="col-xs-12">
+					{if="$fsc->setup['servicios_mostrar_material']"}
+					<div class="col-xs-4">
+						<strong>{$fsc->setup['st_material']}:</strong><br/>{$fsc->servicio->material}
+					</div>
+					{/if}
+				</div>
+				<div class="col-xs-12">
+					{if="$fsc->setup['servicios_mostrar_material_estado']"}
+					<div class="col-xs-6">
+						<strong>{$fsc->setup['st_material_estado']}</strong><br/>{$fsc->servicio->material_estado}
+					</div>
+					{/if}
+					{if="$fsc->setup['servicios_mostrar_accesorios']"}
+					<div class="col-xs-6">
+						<strong>{$fsc->setup['st_accesorios']}:</strong><br/>{$fsc->servicio->accesorios}
+					</div>
+					{/if}
+				</div>
+				<div class="col-xs-12">
+					{if="$fsc->setup['servicios_mostrar_descripcion']"}
+					<br/>
+					<strong>{$fsc->setup['st_descripcion']}:</strong><br/>{$fsc->servicio->descripcion}
+					{/if}
+				</div>
+				<div class="col-xs-12">
+					{if="$fsc->setup['servicios_mostrar_solucion']"}
+					<div class="col-xs-12">
+						<strong>{$fsc->setup['st_solucion']}:</strong><br/>{$fsc->servicio->solucion}
+					</div>
+					{/if}
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-12">
+						<strong>Observaciones:</strong><br/>{$fsc->servicio->observaciones}
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<br/>
+					{if="$fsc->agente"}
+					<div class="col-xs-4">
+						<strong>Le atendió:</strong><br/>{$fsc->agente->get_fullname()}
+					</div>
+					{/if}
+					<div class="col-xs-4">
+						<strong>Teléfono:</strong><br/>{$fsc->empresa->telefono}
+					</div>
+					{if="$fsc->agente"}
+					<div class="col-xs-4">
+						<strong>Cedula</strong><br/> {$fsc->agente->dnicif}
+					</div>
+					{/if}
+				</div>
+            <div class="col-xs-12">
+					<br/>
+					{if="$fsc->setup['servicios_mostrar_fechainicio']"}
+					<div class="col-xs-6">
+						<strong>{$fsc->setup['st_fechainicio']}:</strong><br/>{$fsc->servicio->fechainicio}
+					</div>
+					{/if}
+					{if="$fsc->setup['servicios_mostrar_fechafin']"}
+					<div class="col-xs-6">
+						<strong>{$fsc->setup['st_fechafin']}:</strong><br/>{$fsc->servicio->fechafin}
+					</div>
+					{/if}
+				</div>
+				<div class="col-xs-12">
+					<br/>
+               <p align="justify"><font size="1">{$fsc->condiciones()}</font></p>
+				</div>
+			</div>
+		</div>
+	<!-- Media Página 2 -->
+			<div class="col-xs-6">
+			<div class="row" style="font-size:85%">
+				<div class="col-xs-12">
+					<div class="col-xs-6">
+						<h09><strong>{$fsc->setup['st_servicio']}: </strong>{$fsc->servicio->codigo}<br/></h09>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-6">
+						<strong>Fecha:</strong> {$fsc->servicio->fecha}<br/>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-6">
+						<strong>Hora:</strong> {$fsc->servicio->hora}
+					</div>
+				</div>
+				<div class="col-xs-12"><br/>
+					<div class="col-xs-4">
+						<strong>Nombre:</strong><br/>{$fsc->servicio->nombrecliente}
+					</div>
+					<div class="col-xs-4">
+						<strong>Teléfono fijo:</strong><br/>
+                  {if="$fsc->cliente"}{$fsc->cliente->telefono1}{/if}
+					</div>
+					<div class="col-xs-4">
+						<strong>Cedula:</strong><br/>
+                  {if="$fsc->cliente"}{$fsc->cliente->cifnif}{/if}
+					</div>
+				</div>
+				<div class="col-xs-12">
+					{if="$fsc->setup['servicios_mostrar_material']"}
+					<div class="col-xs-4">
+						<strong>{$fsc->setup['st_material']}:</strong><br/>{$fsc->servicio->material}
+					</div>
+					{/if}
+				</div>
+				<div class="col-xs-12">
+					{if="$fsc->setup['servicios_mostrar_material_estado']"}
+					<div class="col-xs-6">
+						<strong>{$fsc->setup['st_material_estado']}</strong><br/>{$fsc->servicio->material_estado}
+					</div>
+					{/if}
+					{if="$fsc->setup['servicios_mostrar_accesorios']"}
+					<div class="col-xs-6">
+						<strong>{$fsc->setup['st_accesorios']}:</strong><br/>{$fsc->servicio->accesorios}
+					</div>
+					{/if}
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-12">
+						<br/>
+						<strong>{$fsc->setup['st_descripcion']}:</strong><br/>{$fsc->servicio->descripcion}
+					</div>
+				</div>
+				<div class="col-xs-12">
+					{if="$fsc->setup['servicios_mostrar_solucion']"}
+					<div class="col-xs-12">
+						<strong>{$fsc->setup['st_solucion']}:</strong><br/>{$fsc->servicio->solucion}
+					</div>
+					{/if}
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-12">
+						<strong>Observaciones:</strong><br/>{$fsc->servicio->observaciones}
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<br/>
+					{if="$fsc->agente"}
+					<div class="col-xs-4">
+						<strong>Le atendió:</strong><br/>{$fsc->agente->get_fullname()}
+					</div>
+					{/if}
+					<div class="col-xs-4">
+						<strong>Teléfono:</strong><br/>{$fsc->empresa->telefono}
+					</div>
+					{if="$fsc->agente"}
+					<div class="col-xs-4">
+						<strong>Cedula:</strong><br/> {$fsc->agente->dnicif}
+					</div>
+					{/if}
+				</div>
+            <div class="col-xs-12">
+					<br/>
+					{if="$fsc->setup['servicios_mostrar_fechainicio']"}
+					<div class="col-xs-6">
+						<strong>{$fsc->setup['st_fechainicio']}:</strong><br/>{$fsc->servicio->fechainicio}
+					</div>
+					{/if}
+					{if="$fsc->setup['servicios_mostrar_fechafin']"}
+					<div class="col-xs-6">
+						<strong>{$fsc->setup['st_fechafin']}:</strong><br/>{$fsc->servicio->fechafin}
+					</div>
+					{/if}
+				</div>
+				<div class="col-xs-12">
+					<br/>
+					<p align="justify"><font size="1">{$fsc->condiciones()}</font></p>
+				</div>
+			</div>
+		</div>
+	</div>
+{/if}
+</div>
+
+{include="footer2"}

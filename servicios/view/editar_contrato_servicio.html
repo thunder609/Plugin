@@ -1,0 +1,259 @@
+{include="header"}
+
+{if="$fsc->contrato"}
+<script type="text/javascript">
+   function delete_contrato()
+   {
+      if( confirm("¿Realmente desea eliminar este contrato?") )
+      {
+         window.location.href = 'index.php?page=servicios_contratados&delete={$fsc->contrato->idcontrato}';
+      }
+   }
+   $(document).ready(function()
+   {
+      $("#ac_cliente").autocomplete({
+         serviceUrl: 'index.php?page=servicios_contratados',
+         paramName: 'buscar_cliente',
+         onSelect: function(suggestion) {
+            if(suggestion)
+            {
+               if(document.f_contrato.codcliente.value != suggestion.data)
+               {
+                  document.f_contrato.codcliente.value = suggestion.data;
+               }
+            }
+         }
+      });
+   });
+</script>
+
+<form name="f_contrato" action="{$fsc->contrato->url()}" method="post" enctype="multipart/form-data" class="form">
+   <input type="hidden" name="id" value="{$fsc->contrato->idcontrato}"/>
+   <input type="hidden" name="codcliente" value="{$fsc->contrato->codcliente}"/>
+   <div class="container-fluid hidden-print">
+      <div class="row">
+         <div class="col-sm-6">
+            <div class="btn-group">
+               <a href="index.php?page=servicios_contratados" class="btn btn-sm btn-default">
+                  <span class="glyphicon glyphicon-chevron-left"></span>
+                  <span class="hidden-xs">&nbsp; Todos</span>
+               </a>
+               <a href="{$fsc->contrato->url()}" class="btn btn-sm btn-default" title="Recargar la página">
+                  <span class="glyphicon glyphicon-refresh"></span>
+               </a>
+            </div>
+            <a href="#" onclick="window.print();" class="btn btn-sm btn-default">
+               <span class="glyphicon glyphicon-print"></span>
+               <span class="hidden-xs">&nbsp; Imprimir</span>
+            </a>
+         </div>
+         <div class="col-sm-6 text-right">
+            <div class="btn-group">
+               {if="$fsc->allow_delete"}
+               <a class="btn btn-sm btn-danger" href="#" onclick="delete_contrato()">
+                  <span class="glyphicon glyphicon-trash"></span>
+                  <span class="hidden-xs hidden-sm">&nbsp; Eliminar</span>
+               </a>
+               {/if}
+               <button class="btn btn-sm btn-primary" type="submit">
+                  <span class="glyphicon glyphicon-floppy-disk"></span>
+                  <span class="hidden-xs">&nbsp; Guardar</span>
+               </button>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-sm-12">
+            <div class="page-header">
+               <h1>
+                  <span class="glyphicon glyphicon-file"></span> Contrato #{$fsc->contrato->idcontrato}
+                  <small class="hidden-xs">{$fsc->contrato->fecha_alta}</small>
+               </h1>
+               <p class="help-block">
+                  Si a un contrato le asignas un periodo o una fecha para el siguiente servicio,
+                  se generarán los servicios automáticamente. Siempre que esté dentro
+                  del rango de un mes.
+               </p>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-sm-5">
+            <div class="form-group">
+               <div class="form-group">
+                  Cliente:
+                  <div class="input-group">
+                     <input class="form-control" type="text" name="ac_cliente" id="ac_cliente" value="{$fsc->cliente_s->nombre}" placeholder="Buscar" autocomplete="off"/>
+                     <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" onclick="document.f_contrato.ac_cliente.value = '';document.f_contrato.ac_cliente.focus();">
+                           <span class="glyphicon glyphicon-edit"></span>
+                        </button>
+                     </span>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-sm-3">
+            <div class="form-group">
+               Empleado:
+               <select name="codagente" class="form-control">
+               {loop="$fsc->agente->all()"}
+                  {if="$value->codagente==$fsc->contrato->codagente"}
+                  <option value="{$value->codagente}" selected="">{$value->get_fullname()}</option>
+                  {else}
+                  <option value="{$value->codagente}">{$value->get_fullname()}</option>
+                  {/if}
+               {/loop}
+               </select>
+            </div>
+         </div>
+         <div class="col-sm-2">
+            <div class="form-group">
+               Alta:
+               <input type="text" name="fecha_alta" value="{$fsc->contrato->fecha_alta}" class="form-control datepicker" autocomplete="off"/>
+            </div>
+         </div>
+         <div class="col-sm-2">
+            <div class="form-group">
+               Renovación:
+               <input type="text" name="fecha_renovacion" value="{$fsc->contrato->fecha_renovacion}" class="form-control datepicker" autocomplete="off"/>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-sm-3">
+            <div class="form-group">
+               Importe anual:
+               <div class="input-group">
+                  <input type="text" name="importe_anual" value="{$fsc->contrato->importe_anual}" class="form-control" autocomplete="off"/>
+                  <span class="input-group-addon">{$fsc->simbolo_divisa()}</span>
+               </div>
+            </div>
+         </div>
+         <div class="col-sm-3">
+            <div class="form-group">
+               Forma de pago:
+               <select name="codpago" class="form-control">
+               {loop="$fsc->forma_pago->all()"}
+                  {if="$value->codpago==$fsc->contrato->codpago"}
+                  <option value="{$value->codpago}" selected="">{$value->descripcion}</option>
+                  {else}
+                  <option value="{$value->codpago}">{$value->descripcion}</option>
+                  {/if}
+               {/loop}
+               </select>
+            </div>
+         </div>
+         <div class="col-sm-3">
+            <div class="form-group">
+               Servicio cada:
+               <select name="periodo" class="form-control">
+                  <option value="">fecha manual</option>
+                  <option value="">------</option>
+                  {loop="$fsc->periodos()"}
+                     {if="$key==$fsc->contrato->periodo"}
+                     <option value="{$key}" selected="">{$value}</option>
+                     {else}
+                     <option value="{$key}">{$value}</option>
+                     {/if}
+                  {/loop}
+               </select>
+            </div>
+         </div>
+         <div class="col-sm-3">
+            <div class="form-group">
+               Siguiente servicio:
+               <input type="text" name="fsiguiente_servicio" value="{$fsc->contrato->fsiguiente_servicio}" class="form-control datepicker" autocomplete="off"/>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-sm-12">
+            <div class="form-group">
+               Observaciones:
+               <textarea name="observaciones" rows="4" class="form-control">{$fsc->contrato->observaciones}</textarea>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-sm-6">
+            <input name="fcontrato" type="file"/>
+         </div>
+         <div class="col-sm-6">
+            {loop="$fsc->get_documentos()"}
+            <div class="form-group">
+               <div class="btn-group">
+                  <a href="{$value['fullname']}" class="btn btn-sm btn-default">
+                     <span class="glyphicon glyphicon-file"></span>
+                     {$value['name']}
+                  </a>
+                  <a href="{$fsc->contrato->url()}&deletef={$value['name']}" class="btn btn-sm btn-default">
+                     <span class="glyphicon glyphicon-trash"></span>
+                  </a>
+               </div>
+               <p class='help-block'>
+                  <span class="glyphicon glyphicon-compressed"></span>
+                  {$value['filesize']}
+                  &nbsp;
+                  <span class="glyphicon glyphicon-calendar"></span>
+                  {$value['date']}
+               </p>
+            </div>
+            {/loop}
+         </div>
+      </div>
+   </div>
+</form>
+
+<div class="container-fluid visible-print">
+   <div class="row">
+      <div class="col-xs-12">
+         <div class="page-header">
+            <h1>
+               <span class="glyphicon glyphicon-file"></span> Contrato #{$fsc->contrato->idcontrato}
+            </h1>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-xs-6">
+         <b>Cliente</b>: {$fsc->cliente_s->nombre}
+         <br/>
+         <b>Importe anual</b>: {$fsc->show_precio($fsc->contrato->importe_anual)}
+         <br/>
+         <b>Forma de pago</b>:
+         {loop="$fsc->forma_pago->all()"}
+            {if="$value->codpago==$fsc->contrato->codpago"}{$value->descripcion}{/if}
+         {/loop}
+         <br/>
+      </div>
+      <div class="col-xs-6 text-right">
+         <b>Fecha alta</b>: {$fsc->contrato->fecha_alta}
+         <br/>
+         <b>Renovación</b>: {$fsc->contrato->fecha_renovacion}
+         <br/>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-xs-12">
+         <br/>
+         <b>Servicio cada</b>:
+         {loop="$fsc->periodos()"}
+            {if="$key==$fsc->contrato->periodo"}{$value}{/if}
+         {/loop}
+         <br/>
+         <b>Siguiente servicio</b>: {$fsc->contrato->fsiguiente_servicio}
+         <br/><br/>
+         {if="$fsc->contrato->observaciones"}
+         <b>Observaciones:</b> {$fsc->contrato->observaciones}
+         {/if}
+      </div>
+   </div>
+</div>
+{else}
+<div class="text-center">
+   <img src="view/img/fuuu_face.png" alt="fuuuuu"/>
+</div>
+{/if}
+
+{include="footer"}

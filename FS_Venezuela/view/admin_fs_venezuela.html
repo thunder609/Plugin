@@ -1,0 +1,137 @@
+{include="header"}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header">
+                <h1>
+                    <i class="fa fa-globe" aria-hidden="true"></i> FS-Venezuela
+                    <a class="btn btn-xs btn-default" href="{$fsc->url()}" title="Recargar la página">
+                        <span class="glyphicon glyphicon-refresh"></span>
+                    </a>
+                </h1>
+                <p class="help-block">
+                    Este plugin está en desarrollo. Eres libre de aportar lo que puedas:
+                    <a href="https://www.facturascripts.com/plugin/FS_Venezuela" target="_blank">https://www.facturascripts.com/plugin/FS_Venezuela</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            {if="$fsc->empresa->codpais=='VEN'"}
+            <a href="{$fsc->url()}&opc=country" class="btn btn-block btn-success">
+                <span class="glyphicon glyphicon-ok"></span> &nbsp; Venezuela configurado como pais por defecto
+            </a>
+            {else}
+            <a href="{$fsc->url()}&opc=country&value=VEN" class="btn btn-block btn-warning">
+                <span class="badge">1</span> &nbsp; Establecer Venezuela como pais por defecto
+            </a>
+            {/if}
+            <br/>
+        </div>
+        <div class="col-sm-4">
+            {if="$fsc->empresa->coddivisa=='BsS'"}
+            <a href="{$fsc->url()}&opc=currency" class="btn btn-block btn-success">
+                <span class="glyphicon glyphicon-ok"></span> &nbsp; Bolivar Soberano establecida como moneda por defecto
+            </a>
+            {else}
+            <a href="{$fsc->url()}&opc=currency&value=VEF" class="btn btn-block btn-warning">
+                <span class="badge">2</span> &nbsp; Establecer BsS como moneda por defecto
+            </a>
+            {/if}
+            <br/>
+        </div>
+        <div class="col-sm-4">
+            {if="$fsc->is_format_currency()"}
+            <a href="index.php?page=admin_home#avanzado" target="_blank" class="btn btn-block btn-success">
+                <span class="glyphicon glyphicon-ok"></span> &nbsp; Formato de moneda: {$fsc->show_precio(1234.56)}
+            </a>
+            {else}
+            <a href="index.php?page=admin_home#avanzado" target="_blank" class="btn btn-block btn-default">
+                <span class="glyphicon glyphicon-wrench"></span>&nbsp; Formato de moneda: {$fsc->show_precio(1234.56)}
+            </a>
+            <p class="help-block">
+                Puedes cambiar la posición del símbolo de la moneda, el separados de millares, etc, desde el panel de control.
+            </p>
+            {/if}
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-4">
+            {if="$fsc->is_set_tax()"}
+            <a href="{$fsc->url()}&opc=taxes" class="btn btn-block btn-success">
+                <span class="glyphicon glyphicon-ok"></span> &nbsp;
+                Impuestos de Venezuela establecidos
+            </a>
+            {else}
+            <a href="{$fsc->url()}&opc=taxes" class="btn btn-block btn-default">
+                <span class="badge">3</span> &nbsp;
+                Establecer impuestos de Venezuela
+            </a>
+            {/if}
+        </div>
+        <div class="col-sm-4">
+            {if="$fsc->is_set_accounting_year()"}
+            <a href="index.php?page=contabilidad_ejercicio&cod={$fsc->empresa->codejercicio}" target="_blank" class="btn btn-block btn-success">
+                <span class="glyphicon glyphicon-ok"></span> &nbsp;
+                Datos Contables Importados
+            </a>
+            {else}
+            <a href="index.php?page=contabilidad_ejercicio&cod={$fsc->empresa->codejercicio}" target="_blank" class="btn btn-block btn-default">
+                <span class="badge">4</span> &nbsp;
+                Importar los datos contables
+            </a>
+            {/if}
+            <br/>
+        </div>
+        <div class="col-sm-4">
+            {if="$fsc->is_set_regimenes()"}
+            <a href="{$fsc->url()}&opc=regimen" class="btn btn-block btn-success">
+                <span class="glyphicon glyphicon-ok"></span> &nbsp;
+                Régimen de {#FS_IVA#} establecidos
+            </a>
+            {else}
+            <a href="{$fsc->url()}&opc=regimen" class="btn btn-block btn-default">
+                <span class="badge">5</span> &nbsp;
+                Establecer Régimen de {#FS_IVA#}
+            </a>
+            {/if}
+            <br/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header">
+                <h2>
+                    <i class="fa fa-money" aria-hidden="true"></i>
+                    ¿Usas más de una divisa?
+                </h2>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            {if="in_array('google_divisas',$GLOBALS['plugins'])"}
+            <a href="index.php?page=admin_home#descargas" class="btn btn-sm btn-success btn-block">
+                <span class="glyphicon glyphicon-ok"></span>&nbsp; Google Divisas
+            </a>
+            {else}
+            <a href="index.php?page=admin_home#descargas" class="btn btn-sm btn-default btn-block">
+                <i class="fa fa-puzzle-piece" aria-hidden="true"></i>&nbsp; Google Divisas
+            </a>
+            {/if}
+        </div>
+        <div class="col-sm-10">
+            <p class="help-block">
+                Si utilizas más de una divisa, entonces es muy recomendable que instales
+                el plugin google_divisas para actualizar las tasas de conversión de todas
+                las divisas.
+            </p>
+        </div>
+    </div> 
+</div>
+
+{include="footer"}

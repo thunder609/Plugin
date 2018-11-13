@@ -1,0 +1,94 @@
+{include="header2"}
+
+{if="$fsc->presupuesto"}
+<script type="text/javascript">
+   $(document).ready(function() {
+      window.print();
+      setTimeout(function () { window.close(); }, 100);
+   });
+</script>
+
+<div class="containter-fluid">
+   <div class="row">
+      <div class="col-xs-6">
+         <h4><b>Presupuesto: </b>{$fsc->presupuesto->codigo}</h4>
+         <h4><b>Fecha: </b>{$fsc->presupuesto->fecha}</h4>
+         <h4><b>Cliente:</b></h4>
+         {$fsc->presupuesto->nombrecliente}<br/>
+         {#FS_CIFNIF#}: {$fsc->presupuesto->cifnif}<br/>
+         {$fsc->presupuesto->direccion}
+         {if="$fsc->presupuesto->codpostal"}CP: {$fsc->presupuesto->codpostal}{/if}
+         {$fsc->presupuesto->ciudad}, {$fsc->presupuesto->provincia}
+      </div>
+      <div class="col-xs-6 text-right">
+         <h4>{$fsc->empresa->nombre}</h4>
+         {#FS_CIFNIF#}: {$fsc->empresa->cifnif}<br/>
+         {$fsc->empresa->direccion}
+         {if="$fsc->empresa->codpostal"}CP: {$fsc->empresa->codpostal}{/if}
+         {$fsc->empresa->ciudad}, {$fsc->empresa->provincia}<br/>
+         {if="$fsc->empresa->telefono"}Tlf: {$fsc->empresa->telefono}{/if}
+         {if="$fsc->empresa->web"}{$fsc->empresa->web}{/if}
+         {if="$fsc->empresa->email"}{$fsc->empresa->email}{/if}
+      </div>
+   </div>
+</div>
+
+<br/>
+<br/>
+
+<table class="table table-condensed">
+   <thead>
+      <tr>
+         <th>Ref. + Descripción</th>         
+         <th class="text-right">Cant.</th>
+         <th class="text-right">Precio</th>
+         <th class="text-right">Dto.</th>
+         <th class="text-right">Importe</th>
+      </tr>
+   </thead>
+   {loop="$fsc->presupuesto->get_lineas()"}
+   <tr>
+      <td>{$value->referencia}&nbsp;{$value->descripcion}</td>
+      <td class="text-right">{$fsc->show_numero($value->cantidad)}</td>
+      <td class="text-right">{$fsc->show_precio($value->pvpunitario, $fsc->presupuesto->coddivisa)}</td>
+      <td class="text-right">
+         {if="$value->dtopor!=0"}{$fsc->show_numero($value->dtopor)}%{/if}
+      </td>
+      <td class="text-right">{$fsc->show_precio($value->pvptotal, $fsc->presupuesto->coddivisa)}</td>
+   </tr>
+   {/loop}
+</table>
+
+{if="$fsc->presupuesto->observaciones"}
+<b>Observaciones:</b>
+{$fsc->presupuesto->observaciones}
+<br/>
+{/if}
+<br/><br/>
+<table class="table table-condensed">
+   <thead>
+      <tr>
+         <th>Forma de pago</th>
+         <th class="text-right">Neto</th>
+         <th class="text-right">{#FS_IVA#}</th>
+         <th class="text-right">Total</th>
+      </tr>
+   </thead>
+   <tr>
+      <td>{$fsc->presupuesto->codpago}</td>
+      <td class="text-right">{$fsc->show_precio($fsc->presupuesto->neto, $fsc->presupuesto->coddivisa)}</td>
+      <td class="text-right">{$fsc->show_precio($fsc->presupuesto->totaliva, $fsc->presupuesto->coddivisa)}</td>
+      <td class="text-right">{$fsc->show_precio($fsc->presupuesto->total, $fsc->presupuesto->coddivisa)}</td>
+   </tr>
+</table>
+<br/>
+{if="$fsc->presupuesto->finoferta"}
+&nbsp;<b>{#FS_PRESUPUESTO#} válido hasta:</b> {$fsc->presupuesto->finoferta}
+<br/>
+{/if} 
+             
+{else}
+<div class="alert alert-danger">Presupuesto no encontrado.</div>
+{/if}
+
+{include="footer2"}

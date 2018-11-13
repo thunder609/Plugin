@@ -1,0 +1,140 @@
+{include="header"}
+
+{if="$fsc->tabla"}
+<script src="https://cdn.rawgit.com/zenorocha/clipboard.js/v1.5.12/dist/clipboard.min.js"></script>
+<script type="text/javascript">
+   $(document).ready(function() {
+      new Clipboard('.btn');
+   });
+</script>
+
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-sm-12">
+         <div class="btn-group">
+            <a class="btn btn-sm btn-default" href="index.php?page=fsdk_home">
+               <span class="glyphicon glyphicon-arrow-left"></span>
+               <span class="hidden-xs">&nbsp; Atrás</span>
+            </a>
+            <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
+               <span class="glyphicon glyphicon-refresh"></span>
+            </a>
+         </div>
+         <div class="page-header">
+            <h1>
+               <i class="fa fa-database" aria-hidden="true"></i>
+               {$fsc->tabla}
+            </h1>
+         </div>
+      </div>
+   </div>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+   <li role="presentation" class="active">
+      <a href="#xml" aria-controls="xml" role="tab" data-toggle="tab">
+         <i class="fa fa-file-excel-o" aria-hidden="true"></i> model/table/{$fsc->tabla}.xml
+      </a>
+   </li>
+
+   <li role="presentation">
+      <a href="#modelo" aria-controls="modelo" role="tab" data-toggle="tab">
+         <i class="fa fa-file-code-o" aria-hidden="true"></i> model/{$fsc->nombre_modelo}.php
+      </a>
+   </li>
+
+   <li role="presentation">
+      <a href="#controlador" aria-controls="controlador" role="tab" data-toggle="tab">
+         <i class="fa fa-code" aria-hidden="true"></i> controller/{$fsc->tabla}.php
+      </a>
+   </li>
+</ul>
+<br/>
+<div class="tab-content">
+   <div role="tabpanel" class="tab-pane active" id="xml">
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-sm-10">
+               <p class="help-block">
+                  Este archivo le dice a FacturaScripts cómo es la estructura
+                  de esta tabla, para que el modelo correspondiente la genere
+                  o adapte si es necesario. Recuerda que debe estar en la carpeta
+                  <b>model/table</b> del plugin.
+                  <br/>
+                  <b>Aviso</b>: a veces la detección no es perfecta y aparece <b>(...)</b>
+                  en el archivo, tendrás que llenar esos huecos con las columnas que correspondan.
+               </p>
+            </div>
+            <div class="col-sm-2 text-right">
+               <button class="btn btn-sm btn-default" data-clipboard-target="#txt_xml">
+                  <span class="glyphicon glyphicon-scissors" aria-hidden="true"></span>&nbsp; Copiar
+               </button>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-sm-12">
+               <br/>
+               <div class="form-group">
+                  <textarea id='txt_xml' class="form-control" rows="40">{$fsc->xml}</textarea>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   
+   <div role="tabpanel" class="tab-pane" id="modelo">
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-sm-10">
+               <p class="help-block">
+                  Esta clase sirve para leer/modificar/eliminar los datos de la
+                  tabla de la base de datos. Recuerda ponerlo en el directorio
+                  <b>model</b> del plugin.
+               </p>
+            </div>
+            <div class="col-sm-2 text-right">
+               <button class="btn btn-sm btn-default" data-clipboard-target="#txt_modelo">
+                  <span class="glyphicon glyphicon-scissors" aria-hidden="true"></span>&nbsp; Copiar
+               </button>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-sm-12">
+               <br/>
+               <div class="form-group">
+                  <textarea id='txt_modelo' class="form-control" rows="40">{$fsc->modelo}</textarea>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <div role="tabpanel" class="tab-pane" id="controlador">
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-sm-10">
+               <p class="help-block">
+                  Esta clase sirve para comunicarse entre el modelo y la vista.
+                  Recuerda ponerlo en el directorio <b>controller</b> del plugin.
+               </p>
+            </div>
+            <div class="col-sm-2 text-right">
+               <button class="btn btn-sm btn-default" data-clipboard-target="#txt_controlador">
+                  <span class="glyphicon glyphicon-scissors" aria-hidden="true"></span>&nbsp; Copiar
+               </button>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-sm-12">
+               <br/>
+               <div class="form-group">
+                  <textarea id='txt_controlador' class="form-control" rows="40">{$fsc->controlador}</textarea>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{/if}
+
+{include="footer"}

@@ -1,0 +1,1090 @@
+{include="header"}
+
+{if="$fsc->amortizacion"}
+
+<script type="text/javascript">
+   
+   $(document).ready(function () {
+      $('#b_tabla_amortizaciones').click(function (event) {
+         event.preventDefault();
+         cargar('#tabla_amortizaciones', 'index.php?page=tabla_amortizaciones')
+         $('#modal_amortizaciones').modal('show');
+      });
+      $('#b_eliminar').click(function (event) {
+         event.preventDefault();
+         $('#modal_eliminar').modal('show');
+      });
+      $('#b_vender').click(function (event) {
+         event.preventDefault();
+         $('#modal_vender').modal('show');
+      });
+      $('#b_contabilizar').click(function (event) {
+         event.preventDefault();
+         $('#modal_contabilizar').modal('show');
+      });
+      $('#b_finalizar').click(function (event) {
+         event.preventDefault();
+         $('#modal_finalizar').modal('show');
+      });
+      $('#b_reanudar').click(function (event) {
+         event.preventDefault();
+         $('#modal_reanudar').modal('show');
+      });
+      $('#b_resucitar').click(function (event) {
+         event.preventDefault();
+         $('#modal_resucitar').modal('show');
+      });
+      $('#b_aumentar_valor').click(function (event) {
+         event.preventDefault();
+         $('#modal_aumentar_valor').modal('show');
+      });
+      $('#b_cambiar_fecha').click(function (event) {
+         event.preventDefault();
+         $('#modal_cambiar_fecha').modal('show');
+      });
+      $("#ac_cod_subcuenta_cierre").autocomplete({
+         serviceUrl: '{$fsc->url()}',
+         paramName: 'buscar_subcuenta',
+         onSelect: function (suggestion) {
+            if (suggestion)
+            {
+               document.f_subcuentas.desc_cod_subcuenta_cierre.value = suggestion.data;
+               document.f_subcuentas.saldo_cod_subcuenta_cierre.value = suggestion.saldo;
+               $("#linkcod_subcuenta_cierre").attr('href', suggestion.link);
+            }
+         }
+      });
+      $("#ac_cod_subcuenta_debe").autocomplete({
+         serviceUrl: '{$fsc->url()}',
+         paramName: 'buscar_subcuenta',
+         onSelect: function (suggestion) {
+            if (suggestion)
+            {
+               document.f_subcuentas.desc_cod_subcuenta_debe.value = suggestion.data;
+               document.f_subcuentas.saldo_cod_subcuenta_debe.value = suggestion.saldo;
+               $("#linkcod_subcuenta_debe").attr('href', suggestion.link);
+            }
+         }
+      });
+      $("#ac_cod_subcuenta_haber").autocomplete({
+         serviceUrl: '{$fsc->url()}',
+         paramName: 'buscar_subcuenta',
+         onSelect: function (suggestion) {
+            if (suggestion)
+            {
+               document.f_subcuentas.desc_cod_subcuenta_haber.value = suggestion.data;
+               document.f_subcuentas.saldo_cod_subcuenta_haber.value = suggestion.saldo;
+               $("#linkcod_subcuenta_haber").attr('href', suggestion.link);
+            }
+         }
+      });
+      $("#ac_cod_subcuenta_perdidas").autocomplete({
+         serviceUrl: '{$fsc->url()}',
+         paramName: 'buscar_subcuenta',
+         onSelect: function (suggestion) {
+            if (suggestion)
+            {
+               document.f_subcuentas.desc_cod_subcuenta_perdidas.value = suggestion.data;
+               document.f_subcuentas.saldo_cod_subcuenta_perdidas.value = suggestion.saldo;
+               $("#linkcod_subcuenta_perdidas").attr('href', suggestion.link);
+            }
+         }
+      });
+      $("#ac_cod_subcuenta_beneficios").autocomplete({
+         serviceUrl: '{$fsc->url()}',
+         paramName: 'buscar_subcuenta',
+         onSelect: function (suggestion) {
+            if (suggestion)
+            {
+               document.f_subcuentas.desc_cod_subcuenta_beneficios.value = suggestion.data;
+               document.f_subcuentas.saldo_cod_subcuenta_beneficios.value = suggestion.saldo;
+               $("#linkcod_subcuenta_beneficios").attr('href', suggestion.link);
+            }
+         }
+      });
+      $("#ac_facturas").autocomplete({
+         serviceUrl: '{$fsc->url()}',
+         paramName: 'buscar_factura',
+         onSelect: function (suggestion) {
+            if (suggestion)
+            {
+               document.f_factura.factura_cliente.value = suggestion.cliente;
+               document.f_factura.factura_fecha.value = suggestion.fecha;
+               document.f_factura.factura_total.value = suggestion.total;
+               $("#linkcod_factura").attr('href', suggestion.link);
+            }
+         }
+      });
+   });
+   function cargar(div, desde)
+   {
+      $(div).load(desde);
+   }
+</script>
+<div class="modal fade" id="modal_subcuentas">
+   <div class="modal-dialog" style="width: 1700px;">
+      <div class="modal-content">
+         <div id="tabla_subcuentas"></div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="modal_amortizaciones">
+   <div class="modal-dialog" style="width: 1000px;">
+      <div class="modal-content">
+         <div id="tabla_amortizaciones"></div>
+      </div>
+   </div>
+</div>
+
+<form action="index.php?page=amortizaciones&editar=true" method="post" class="form">      
+
+{if="$fsc->aumentar"}
+<input name="fecha_cambio" class="form-control hidden" value={$fsc->fecha_cambio}>
+<div class="alert alert-warning alert-dismissible hidden-print" role="alert">
+   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">×</span>
+   </button>
+   <ul><li>El aumento de valor en la amortización se hará efectivo cuando pinches en <b>Guardar</b>, esto es una <b>previsualización</b></li></ul>
+</div>
+{elseif="$fsc->cambiar_periodos"}
+<input name="fecha_cambio" class="form-control hidden" value={$fsc->fecha_cambio}>
+<input name="disminuir_periodos" class="form-control hidden" value={$fsc->cambiar_periodos}>
+<div class="alert alert-warning alert-dismissible hidden-print" role="alert">
+   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">×</span>
+   </button>
+   <ul><li>El cambio de periodos en la amortización se hará efectivo cuando pinches en <b>Guardar</b>, esto es una <b>previsualización</b></li></ul>
+</div>
+{/if}
+
+<div class="container-fluid">
+      <div class="row">
+         <div class="col-xs-9 text-left">
+            
+            <div class="btn-group">
+               <a class="btn btn-sm btn-default" href="index.php?page=amortizaciones">
+                  <span class="glyphicon glyphicon-arrow-left"></span>
+                  <span class="hidden-xs hidden-sm">&nbsp;Amortizaciones</span>
+               </a>
+               <a class="btn btn-sm btn-default hidden-xs" href="index.php?page=editar_amortizacion&id={$fsc->amortizacion->id_amortizacion}" title="recargar la página">
+                  <span class="glyphicon glyphicon-refresh"></span>
+               </a>
+            </div>
+            
+            
+            <div class="btn-group">
+               {if="$fsc->aumentar == null && $fsc->cambiar_periodos == null"}
+                  {if="$fsc->amortizacion->fin_vida_util == 0 && $fsc->amortizacion->vendida == 0"}
+                     {if="$fsc->amortizacion->amortizando == 0"}
+                        <a id="b_reanudar" class="btn btn-sm btn-default">
+                           <span class="glyphicon glyphicon-open"></span>
+                           <span class="hidden-xs">
+                              &nbsp;Reanudar
+                           </span>
+                        </a>
+                     {/if}
+                     <a id="b_contabilizar" class="btn btn-sm btn-default" href="#">
+                        <span class="glyphicon glyphicon-save"></span>
+                        <span class="hidden-xs">
+                           &nbsp;Contabilizar
+                        </span>
+                     </a>
+                  {/if}
+                  {if="$fsc->amortizacion->fin_vida_util == 0 && $fsc->amortizacion->vendida == 0"}
+                     <a id="b_vender" class="btn btn-sm btn-default">
+                        <span class="glyphicon glyphicon-shopping-cart"></span>
+                        <span class="hidden-xs">
+                           &nbsp;Vender
+                        </span>
+                     </a>
+                     <a id="b_finalizar" class="btn btn-sm btn-default" href="#">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        <span class="hidden-xs">
+                           &nbsp;Finalizar vida útil
+                        </span>
+                     </a>
+                     <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                           <span class="glyphicon glyphicon-wrench"></span>
+                           <span class="hidden-xs">
+                              &nbsp; Modificar 
+                           </span>
+                           <span class="caret"></span>
+                        </button>
+
+                        <ul class="dropdown-menu" role="menu">
+
+                           <li>
+                              <a id="b_aumentar_valor" href="#">
+                                 <span class="glyphicon glyphicon-eur"></span>
+                                    &nbsp;Aumentar valor
+                              </a>
+                           </li>
+
+                           <li role="separator" class="divider"></li>
+                           <li>
+                              <a id="b_cambiar_fecha" href="#">
+                                 <span class="glyphicon glyphicon-calendar"></span>
+                                    &nbsp;Cambiar fecha
+                              </a>
+                           </li>
+                        </ul>
+                     </div>
+                  {/if}
+               {/if}
+            </div>
+         </div>
+         <div class="col-xs-3 text-right">
+            <div class="btn-group">
+               <a id="b_eliminar" class="btn btn-sm btn-danger">
+                  <span class="glyphicon glyphicon-remove"></span>
+                  <span class="hidden-sm hidden-xs">
+                     &nbsp;Eliminar
+                  </span>
+               </a>
+               {if="$fsc->amortizacion->fin_vida_util == 0 && $fsc->amortizacion->vendida == 0"}
+               <button class="btn btn-sm btn-primary" type="submit">
+                  <span class="glyphicon glyphicon-floppy-disk"></span>
+                  <span class="hidden-sm hidden-xs">
+                     &nbsp;Guardar
+                  </span>
+               </button>
+               {/if}
+            </div>
+         </div>
+      </div>
+      
+      <!--CABECERA DE LA PÄGINA-->
+      {if="$fsc->aumentar"}
+      <div class="row page-header">
+         <div class="col-md-12">
+            <div>
+               <h1>
+                  <small>Aumentando el valor de la amortización</small> 
+                  {$fsc->amortizacion->descripcion} <small>en</small> {$fsc->show_precio($fsc->aumentar)} <small>a partir del</small> {$fsc->fecha_cambio}
+               </h1>
+            </div>
+         </div>
+      </div>
+      {elseif="$fsc->cambiar_periodos"}
+      <div class="row page-header">
+         <div class="col-md-12">
+            <div>
+               <h1>
+                  <small>Cambiando los periodos de la amortización</small> 
+                  {$fsc->amortizacion->descripcion} <small>en</small> {$fsc->cambiar_periodos} <small>a partir del</small> {$fsc->fecha_cambio}
+               </h1>
+            </div>
+         </div>
+      </div>
+      {else}
+
+      <div class="row">
+         <div class="col-md-7">
+            <div class="page-header">
+               <h1>
+                  Amortización sobre la factura 
+                  <a href="index.php?page=compras_factura&amp;id={$fsc->amortizacion->id_factura}" target="_blank" style="font-size: 35px;">{$fsc->factura->codigo}</a>
+               </h1>
+            </div>
+         </div>
+         <div class="col-md-5 text-right">
+            <div class="text-capitalize page-header">
+               <h1>
+                  {if="$fsc->amortizacion->vendida == 1"}
+                  Vendida
+                  <div class="btn-group">
+                     <a class="btn btn-sm btn-default" target="_blank" href="index.php?page=contabilidad_asiento&id={$fsc->amortizacion->id_asiento_fin_vida}">
+                        <span>Ver asiento de cierre</span>
+                     </a>
+                     <a class="btn btn-sm btn-default" target="_blank" href="index.php?page=ventas_factura&id={$fsc->amortizacion->id_factura_venta}">
+                        <span>Ver factura de venta</span>
+                     </a>
+                     <a id="b_resucitar" class="btn btn-sm btn-success">
+                        <span>Restaurar amortización</span>
+                     </a>
+                  </div>
+                  {elseif="$fsc->amortizacion->fin_vida_util == 1"}
+                  Vida útil finalizada
+                  <div class="btn-group">
+                     <a class="btn btn-sm btn-default" target="_blank" href="index.php?page=contabilidad_asiento&id={$fsc->amortizacion->id_asiento_fin_vida}">
+                        <span>Ver asiento de cierre</span>
+                     </a>
+                     <a id="b_resucitar" class="btn btn-sm btn-success">
+                        <span>Restaurar amortización</span>
+                     </a>
+                  </div>
+                  {elseif="$fsc->amortizacion->completada == 1"}
+                  Completada
+                  {elseif="$fsc->amortizacion->amortizando == 0"}
+                  Anulada
+                  {else}
+                  Amortizando
+                  {/if}      
+               </h1>
+            </div>
+         </div>
+      </div>
+      
+      {/if}
+      
+      <div class="table-responsive">
+         <table class="table">
+            <thead>
+               <tr>
+                  <th style="min-width: 250px">Artículo</th>
+                  <th width="130" style="min-width: 130px">Tipo</th>
+                  <th width="120" style="min-width: 120px">Contabilización</th>
+                  <th width="150" class="text-right" style="min-width: 150px">Valor</th>
+                  <th width="150" class="text-right" style="min-width: 150px">Residual</th>
+                  <th width="65" class="text-right" style="min-width: 65px">Años</th>
+                  <th width="125" class="text-right" style="min-width: 125px">Fecha Inicio</th>
+                  <th width="125" class="text-right" style="min-width: 125px">Fecha Fin</th>
+               </tr>
+            </thead>
+            <tbody>
+            <input name="id_amortizacion" class="form-control hidden" value="{$fsc->amortizacion->id_amortizacion}"/>
+            <input name="periodo_inicial" class="form-control hidden" value="{$fsc->periodo_inicial}" readonly/>
+            <input name="ano_fiscal" class="form-control hidden" value="{$fsc->ano_fiscal}"/>
+            <tr>
+                  <td>
+                     <input name="descripcion" class="form-control" value="{$fsc->amortizacion->descripcion}"/>
+                  </td>
+                  <td>
+                     <input name="tipo" class="form-control" value="{$fsc->amortizacion->tipo}" readonly/>
+                  </td>
+                  <td>
+                     <input name="contabilizacion" class="form-control" value="{$fsc->amortizacion->contabilizacion}" readonly/>
+                  </td>
+                  <td>
+                     <input name="valor" class="form-control text-right" value="{$fsc->amortizacion->valor}" readonly/>
+                  </td>
+                  <td>
+                     <input name="residual" class="form-control text-right" value="{$fsc->amortizacion->residual}" readonly/>
+                  </td>
+                  <td>
+                     <input name="periodos" class="form-control text-right" value="{$fsc->amortizacion->periodos}" readonly/>
+                  </td>
+                  <td>
+                     <input name="fecha_inicio" class="form-control text-right" value="{$fsc->amortizacion->fecha_inicio}" readonly/>
+                  </td>
+                  <td>
+                     <input name="fecha_fin" class="form-control text-right" value="{$fsc->amortizacion->fecha_fin}" readonly/>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+
+      <!-- Cabezeras de las pestañas -->
+      <ul class="nav nav-tabs" role="tablist">
+         <li role="presentation" class="active">
+            <a href="#lineas" aria-controls="lineas" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-book" aria-hidden="true">
+               </span>&nbsp; Líneas
+            </a>
+         </li>
+         <li role="presentation">
+            <a href="#subcuentas" aria-controls="subcuentas" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-book" aria-hidden="true">
+               </span>&nbsp; Subcuentas
+            </a>
+         </li>
+         {loop="$fsc->extensions"}
+         {if="$value->type=='tab'"}
+         <li role="presentation">
+            <a href="#ext_{$value->name}" aria-controls="ext_{$value->name}" role="tab" data-toggle="tab">{$value->text}</a>
+         </li>
+         {/if}
+         {/loop}
+      </ul>
+      
+      <div class="tab-content">
+         
+         <div role="tabpanel" class="tab-pane active" id="lineas">
+         <br/>
+            <div class="tab-content">
+               {loop="$fsc->listado_lineas"}
+                  <div role="tabpanel" class="tab-pane {if="$key == 1"}active{/if}" id="lineas_{$key}">
+
+                     <div class="table-responsive">
+                        <table class="table table-hover">
+                           <thead>
+                              <tr>
+                                 <th width="100" style="min-width: 100px;">Año Fiscal</th>
+                                 <th width="65" style="min-width: 65px;">Periodo</th>
+                                 <th width="125" style="min-width: 125px;">Fecha</th>
+                                 <th style="min-width: 200px;">Artículo</th>
+                                 <th width="135" class="text-right" style="min-width: 135px;">Estado</th>
+                                 <th width="150" class="text-right" style="min-width: 150px;">Cantidad a amortizar</th>
+                                 {if="$fsc->fecha_cambio == null"}
+                                 <th width="225" class="text-right" style="min-width: 225px;">Contabilizar</th>
+                                 {/if}
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {loop="$value"}
+                              <tr>
+                                 <td>
+                                    <input name="contabilizada_{$value->ano}_{$value->periodo}" class="form-control hidden" value="{$value->contabilizada}" readonly/>
+                                    <input name="id_amortizacion_{$value->ano}_{$value->periodo}" class="form-control hidden" value="{$value->id_amortizacion}" readonly/>
+                                    <input name="id_linea_{$value->ano}_{$value->periodo}" class="form-control hidden" value="{$value->id_linea}" readonly/>
+                                    <input name="ano_{$value->ano}_{$value->periodo}" class="form-control" value="{$value->ano}" readonly/>
+                                 </td>
+                                 <td>
+                                    <input name="periodo_{$value->ano}_{$value->periodo}" class="form-control text-center" value="{$value->periodo}" readonly/>
+                                 </td>
+                                 <td>
+                                    <input name="fecha_{$value->ano}_{$value->periodo}" class="form-control datepicker text-right" value="{$value->fecha}"
+                                           {if="$value->contabilizada == 1 || $fsc->amortizacion->fin_vida_util == 1"}
+                                    readonly
+                                    {/if}/>
+                                 </td>
+                                 <td>
+                                    <input name="descripcion_{$value->ano}_{$value->periodo}" class="form-control" value="{$fsc->amortizacion->descripcion}" readonly/>
+                                 </td>
+                                 <td>
+                                    <input name="estado_{$value->ano}_{$value->periodo}" class="form-control" readonly
+                                           {if="$value->contabilizada == 1"}
+                                           value="Contabilizada"
+                                           {else}
+                                           {if="$fsc->amortizacion->fin_vida_util == 1 || $fsc->amortizacion->vendida == 1"}
+                                           value="Finalizada"
+                                           {else}
+                                           value="Pendiente"
+                                           {/if}{/if}
+                                 </td>
+                                 <td>
+                                    <input name="cantidad_{$value->ano}_{$value->periodo}" class="form-control text-right"value="{$value->cantidad}"
+                                           {if="$value->contabilizada == 1 || $fsc->amortizacion->fin_vida_util == 1 || $fsc->amortizacion->vendida == 1"}
+                                    readonly
+                                    {/if}/>
+                                 </td>
+                                 {if="$fsc->fecha_cambio == null"}
+                                 <td style="text-align: right;">
+                                    <div style="width: 208px;">
+                                       {if="$value->contabilizada == 1"}
+                                       <div class="btn-group">
+                                          <a class="btn btn-sm btn-primary" target="_blank" href="index.php?page=contabilidad_asiento&id={$value->id_asiento}">
+                                             <span>Ver asiento</span>
+                                          </a>
+                                          <a class="btn btn-sm btn-danger" href="index.php?page=editar_amortizacion&id={$fsc->amortizacion->id_amortizacion}&delete={$value->id_linea}">
+                                             <span>Eliminar asiento</span>
+                                          </a>
+                                       </div>
+                                       {else}
+                                       {if="$fsc->amortizacion->fin_vida_util == 0 && $fsc->amortizacion->vendida == 0"}
+                                       <a class="btn btn-sm btn-success" style="width: 208px;" href="index.php?page=amortizaciones&count={$value->id_linea}">
+                                          <span>Contabilizar</span>
+                                       </a>
+                                       {/if}
+                                       {/if}
+                                    </div>
+                                 </td>
+                                 {/if}
+                              </tr>
+                              {/loop}
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               {/loop}
+            </div>
+            
+            <nav aria-label="Page navigation" class="text-center">
+               <ul class="pagination" role="tablist">
+                  {loop="$fsc->listado_lineas"}
+                  <li role="presentation" class="{if="$key == 1"}active{/if}"><a href="#lineas_{$key}" aria-controls="lineas_{$key}" role="tab" data-toggle="tab">{$key}</a></li>
+                  {/loop}
+               </ul>
+            </nav>
+            
+         </div>
+         
+         <div role="tabpanel" class="tab-pane" id="lineas">
+            <br/>
+            
+            </form>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="subcuentas">
+            <div class="table-responsive">
+               <form name="f_subcuentas" action="index.php?page=editar_amortizacion&id={$fsc->amortizacion->id_amortizacion}&new_counts=true" method="post" class="form">
+                  <div class="container-fluid">
+                     <div class="row">
+                        <div class="col-sm-12">
+                           <div class="page-header">
+                              <p class="help-block">
+                                 El siguiente formulario es necesario rellenarlo para que se realicen correctamente los asientos contables, no es obligatorio, se puede rellenar despues, al editar la amortización.
+                                 <br/>
+                                 La <b>Subcuenta Cierre</b> debe tener la misma subcuenta que le pusimos al árticulo en compras, y solo se utilizara cuando se finalice la amortizacióm.
+                                 <br/>
+                                 La <b>Subcuenta Debe</b> y <b>Subcuenta Haber</b> son para realizar los apuntes contables cda mes, trimestre o año.
+                                 <br/>
+                                 Y <b>Subcuenta Perdidas</b> y <b>Subcuenta Beneficios</b> se utilizan cuando se finaliza la vida útil de un amortizado o cuando se vende.
+                                 <br/>
+                                 En la parte inferior de la página teneis una <b>Tabla de Subcuentas</b>, donde podeis ver las subcuentas correspondientes a cada tipo de amortización.
+                              </p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="table-responsive">
+                     <table class="table">
+                        <thead>
+                           <tr>
+                              <th width="190" >Subcuenta</th>
+                              <th width="220" style="min-width: 140px;">Código</th>
+                              <th width="50"></th>
+                              <th style="min-width: 300px;">Descripción</th>
+                              <th class="text-right" width="140" style="min-width: 100px;">Saldo</th>
+                           </tr>
+                        </thead>
+                        <tr>
+                           <td><div class="form-control">Cierre</div></td>
+                           <td>
+                              <input class="form-control" type="text" name="cod_subcuenta_cierre" value="{$fsc->cod_subcuenta_cierre->codsubcuenta}" id="ac_cod_subcuenta_cierre" placeholder="Buscar" autocomplete="off"/>
+                           </td>
+                           <td>
+                              <a href="{$fsc->cod_subcuenta_cierre->url()}" target="_blank" id="linkcod_subcuenta_cierre" class="btn btn-sm btn-default">
+                                 <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                              </a>
+                           </td>
+                           <td>
+                              <input type="text" name="desc_cod_subcuenta_cierre" value="{$fsc->cod_subcuenta_cierre->descripcion}" class="form-control" autocomplete="off" disabled="disabled"/>
+                           </td>
+                           <td>
+                              <input type="text" name="saldo_cod_subcuenta_cierre" value="{$fsc->cod_subcuenta_cierre->saldo}" class="form-control text-right" autocomplete="off" disabled="disabled"/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><div class="form-control">Debe</div></td>
+                           <td>
+                              <input class="form-control" type="text" name="cod_subcuenta_debe" value="{$fsc->cod_subcuenta_debe->codsubcuenta}" id="ac_cod_subcuenta_debe" placeholder="Buscar" autocomplete="off"/>
+                           </td>
+                           <td>
+                              <a href="{$fsc->cod_subcuenta_debe->url()}" target="_blank" id="linkcod_subcuenta_debe" class="btn btn-sm btn-default">
+                                 <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                              </a>
+                           </td>
+                           <td>
+                              <input type="text" name="desc_cod_subcuenta_debe" value="{$fsc->cod_subcuenta_debe->descripcion}" class="form-control" autocomplete="off" disabled="disabled"/>
+                           </td>
+                           <td>
+                              <input type="text" name="saldo_cod_subcuenta_debe" value="{$fsc->cod_subcuenta_debe->saldo}" class="form-control text-right" autocomplete="off" disabled="disabled"/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><div class="form-control">Haber</div></td>
+                           <td>
+                              <input class="form-control" type="text" name="cod_subcuenta_haber" value="{$fsc->cod_subcuenta_haber->codsubcuenta}" id="ac_cod_subcuenta_haber" placeholder="Buscar" autocomplete="off"/>
+                           </td>
+                           <td>
+                              <a href="{$fsc->cod_subcuenta_haber->url()}" target="_blank" id="linkcod_subcuenta_haber" class="btn btn-sm btn-default">
+                                 <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                              </a>
+                           </td>
+                           <td>
+                              <input type="text" name="desc_cod_subcuenta_haber" value="{$fsc->cod_subcuenta_haber->descripcion}" class="form-control" autocomplete="off" disabled="disabled"/>
+                           </td>
+                           <td>
+                              <input type="text" name="saldo_cod_subcuenta_haber" value="{$fsc->cod_subcuenta_haber->saldo}" class="form-control text-right" autocomplete="off" disabled="disabled"/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><div class="form-control">Pérdidas</div></td>
+                           <td>
+                              <input class="form-control" type="text" name="cod_subcuenta_perdidas" value="{$fsc->cod_subcuenta_perdidas->codsubcuenta}" id="ac_cod_subcuenta_perdidas" placeholder="Buscar" autocomplete="off"/>
+                           </td>
+                           <td>
+                              <a href="{$fsc->cod_subcuenta_perdidas->url()}" target="_blank" id="linkcod_subcuenta_perdidas" class="btn btn-sm btn-default">
+                                 <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                              </a>
+                           </td>
+                           <td>
+                              <input type="text" name="desc_cod_subcuenta_perdidas" value="{$fsc->cod_subcuenta_perdidas->descripcion}" class="form-control" autocomplete="off" disabled="disabled"/>
+                           </td>
+                           <td>
+                              <input type="text" name="saldo_cod_subcuenta_perdidas" value="{$fsc->cod_subcuenta_perdidas->saldo}" class="form-control text-right" autocomplete="off" disabled="disabled"/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><div class="form-control">Beneficios</div></td>
+                           <td>
+                              <input class="form-control" type="text" name="cod_subcuenta_beneficios" value="{$fsc->cod_subcuenta_beneficios->codsubcuenta}" id="ac_cod_subcuenta_beneficios" placeholder="Buscar" autocomplete="off"/>
+                           </td>
+                           <td>
+                              <a href="{$fsc->cod_subcuenta_beneficios->url()}" target="_blank" id="linkcod_subcuenta_beneficios" class="btn btn-sm btn-default">
+                                 <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                              </a>
+                           </td>
+                           <td>
+                              <input type="text" name="desc_cod_subcuenta_beneficios" value="{$fsc->cod_subcuenta_beneficios->descripcion}" class="form-control" autocomplete="off" disabled="disabled"/>
+                           </td>
+                           <td>
+                              <input type="text" name="saldo_cod_subcuenta_beneficios" value="{$fsc->cod_subcuenta_beneficios->saldo}" class="form-control text-right" autocomplete="off" disabled="disabled"/>
+                           </td>
+                        </tr>         
+                     </table>
+                  </div>
+                  <div class="text-right" style="padding-right: 10px;">
+                     <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();">
+                        <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp; Guardar
+                     </button>
+                  </div>
+               </form>
+            </div>
+            <iframe
+               width="100%"
+               height="550"
+               frameborder="0"
+               src="index.php?page=tabla_subcuentas">
+            </iframe>
+         </div>
+         {loop="$fsc->extensions"}
+         {if="$value->type=='tab'"}
+         <div role="tabpanel" class="tab-pane" id="ext_{$value->name}">
+            <iframe src="index.php?page={$value->from}{$value->params}" width="100%" height="2000" frameborder="0"></iframe>
+         </div>
+         {/if}
+         {/loop}
+      </div>
+</div>
+   
+<div class="modal fade" id="modal_eliminar">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">¿Realmente desea eliminar esta amortización?</h4>
+         </div>
+         <div class="modal-body">
+            Si decide <b>eliminar</b>, la amortización se borrará de la base de datos y no se podrá reanudar. Los asientos contables que se han creado permaneceran en la contabilidad.
+            <br/><br/>
+            Si decide <b>anular</b> la amortización, no se generaran los asientos automticamente mendiante CRON y 
+            tampoco aparecerá en la pestaña pendientes de las amortizaciones, 
+            pero podrá seguir generando los asientos a través de esta misma página,
+            puedes <b>reanudar</b> la amortización más adelante. 
+         </div>
+         <div class="modal-footer">
+            <a class="btn btn-sm btn-danger pull-left" href="index.php?page=amortizaciones&delete={$fsc->amortizacion->id_amortizacion}">
+               <span class="glyphicon glyphicon-trash"></span>
+               <span>&nbsp;Eliminar</span>
+            </a>
+            <a class="btn btn-sm btn-warning" href="index.php?page=amortizaciones&cancel={$fsc->amortizacion->id_amortizacion}">
+               <span class="glyphicon glyphicon-remove"></span>
+               <span>&nbsp;Anular</span>
+            </a>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade" id="modal_reanudar">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Reanudar amortización</h4>
+         </div>
+         <div class="modal-body">
+            Al reanudar la amortización, esta aparecera de nuevo en la pestaña pendientes, desde donde podremos contabilizar todas las amortizaciones a la vez.
+         </div>
+         <div class="modal-footer">
+            <a class="btn btn-sm btn-success" style="width: 100%;" href="index.php?page=amortizaciones&restart={$fsc->amortizacion->id_amortizacion}">
+               <span class="glyphicon glyphicon-open"></span>
+               <span>&nbsp;Reanudar</span>
+            </a>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade" id="modal_resucitar">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Restaurar amortización</h4>
+         </div>
+         <div class="modal-body">
+            Al reanudar la amortizaciónse eliminara el asiento de fin vida del amortizado, y si de ese periodo no se amortizo el total, también se eliminara ese asiento.
+         </div>
+         <div class="modal-footer">
+            <a class="btn btn-sm btn-success" style="width: 100%;" href="index.php?page=editar_amortizacion&id={$fsc->amortizacion->id_amortizacion}&renew=True">
+               <span>Restaurar amortización</span>
+            </a>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!--Cuadro de asientos contables-->
+<div class="modal fade" id="modal_contabilizar">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Crear asiento de la Amortización</h4>
+         </div>
+         <div class="modal-body">
+            
+            Desde este pequeño asistente podemos contabilizar varios periodos a la vez, creando sus asientos correspondientes. Ejemplo:
+            <br/>
+            <div class="table-responsive">
+               <table class="table table-hover">
+                  <thead>
+                     <tr>
+                        <td><b>Subcuenta + descripción</b></td>
+                        <td width="100" class="text-right"><b>Debe</b></td>
+                        <td width="100" class="text-right"><b>Haber</b></td>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <td>6810000000 Amortización del inmovilizado material</td>
+                        <td class="text-right">1 000.00 €</td>
+                        <td class="text-right">0.00 €</td>
+                     </tr>
+                     <tr>
+                        <td>2813000000 Amortización acumulada de maquinaria</td>
+                        <td class="text-right">0.00 €</td>
+                        <td class="text-right">1 000.00 €</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+            
+         </div>
+         <div class="modal-footer">
+            
+            <form action="index.php?page=amortizaciones&count_by_date=true" method="post" class="form">
+               <input name="id_amortizacion" class="form-control hidden" value="{$fsc->amortizacion->id_amortizacion}"/>
+               <div style="text-align: left;">
+                  <label style="font-size: 15px;">Contabilizar desde el</label>
+                  <input style="width: 150px;text-align: left;" name="fecha_inicial" class="form datepicker text-right" value="{$fsc->ejercicio_actual->fechainicio}"/>
+
+                  <label style="font-size: 15px;">hasta el</label>
+                  <input style="width: 150px;text-align: left;" name="fecha_final" class="form datepicker text-right" value="{$fsc->today()}"/>
+               </div>
+               <br/>
+               <button style="width: 100%;" class="btn btn-sm btn-success" type="submit">
+                  <span class="glyphicon glyphicon-save"></span>
+                  <span>
+                     &nbsp;Crear Asientos
+                  </span>
+               </button>
+            </form>
+            
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade" id="modal_aumentar_valor">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Aumentar Valor</h4>
+         </div>
+         <div class="modal-body">
+            Si tenemos que reparar o invertir más capital en un amortizado, podemos aumentar el valor de este.
+            <br/>
+            La fecha de finalización no se modificara.
+            <form action="index.php?page=editar_amortizacion&id={$fsc->amortizacion->id_amortizacion}&value=true" method="post" class="form">
+               <div class="table-responsive">
+                  <table class="table table-hover">
+                     <thead>
+                        <tr>
+                           <th style="text-align: right;">Fecha de la factura</th>
+                           <th style="text-align: right;">Valor a aumentar</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr>
+                           <td>
+                              <input style="text-align: right;" name="fecha" class="form-control datepicker" value="{$fsc->today()}"/>
+                           </td>
+                           <td>
+                              <input style="text-align: right;" name="valor" class="form-control"/>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <button style="width: 100%;" class="btn btn-sm btn-success" type="submit">
+                  <span class="glyphicon glyphicon-eur"></span>
+                  <span>
+                     &nbsp;Aumentar valor
+                  </span>
+               </button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade" id="modal_cambiar_fecha">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Cambiar fecha</h4>
+         </div>
+         <form action="index.php?page=editar_amortizacion&id={$fsc->amortizacion->id_amortizacion}&change_date=true" method="post" class="form">
+            <div class="modal-body">
+               Desde este formulario podemos aumentar o disminuir la cantidad de años de una amortización.
+               <br/><br/>
+               <a id="b_tabla_amortizaciones" class="btn btn-sm btn-success" data-dismiss="modal">
+                  <span class="glyphicon glyphicon-list"></span>
+                  <span class="hidden-sm hidden-xs">
+                     &nbsp;Ver periodos para los diferentes amortizados
+                  </span>
+               </a>
+               <br/><br/>
+               <div class="table-responsive">
+                  <table class="table table-hover">
+                     <thead>
+                        <tr>
+                           <th style="text-align: right;">Fecha de modificación</th>
+                           <th style="text-align: right;">Periodos</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr>
+                           <td>
+                              <input style="text-align: right;" name="fecha" class="form-control datepicker" value="{$fsc->today()}"/>
+                           </td>
+                           <td>
+                              <input type="number" name="periodos" value="0" min="{$fsc->periodo_minimo}" max="200" step="any" class="form-control text-right"/>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <button style="width: 100%;" class="btn btn-sm btn-success" type="submit">
+                  <span class="glyphicon glyphico-calendar"></span>
+                  <span>
+                     &nbsp;Cambiar fecha
+                  </span>
+               </button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade" id="modal_vender">
+   <div class="modal-dialog" style="width: 700px;">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">La venta de un amortizado todavía no esta soportada</h4>
+         </div>
+         <div class="modal-body">
+
+            <form name="f_factura" action="index.php?page=vender_amortizacion" method="post" class="form">
+               <input name="id_amortizacion" class="form-control hidden" value="{$fsc->amortizacion->id_amortizacion}"/>
+               <table class="table">
+                     <thead>
+                        <tr>
+                           <th>Valor Inicial</th>
+                           <th class="text-right">Amortizado</th>
+                           <th class="text-right">Valor actual</th>
+                        </tr>
+                     </thead>
+                     <tr>
+                        <td>{$fsc->show_precio($fsc->amortizacion->valor)}</td>
+                        <td class="text-right">{$fsc->show_precio($fsc->amortizado)}</td>   
+                        <td class="text-right">{$fsc->show_precio($fsc->sin_amortizar)}</td>
+                     </tr>
+               </table>
+               Para realizar los apuntes contables de la <b>venta de un amortizado</b>, lo primero que necesitamos es que este creada la <b>factura de venta</b>.
+               <br/><br/>
+               Si la <b>factura de venta</b> esta creada, justo debajo de este texto se encuentra un formulario de busqueda, desde donde podremos localizar la factura 
+               relacionada con la venta del amortizado.
+               <br/><br/>
+               Una vez encontrada la <b>factura de venta</b>, pinchamos en <b>ver líneas de la factura</b> y seguimos las instrucciones.
+               <br/><br/>
+               <div class="table-responsive">
+                  <table class="table">
+                     <thead>
+                        <tr>
+                           <th width="160">Código Factura</th>
+                           <th>Cliente</th>
+                           <th width="125">Fecha</th>
+                           <th width="140">Total</th>
+                           <th width="50"></th>
+                        </tr>
+                     </thead>
+                     <tr>
+                        <td>
+                           <input class="form-control" type="text" name="factura_codigo" id="ac_facturas" placeholder="Buscar" autocomplete="off"/>
+                        </td>
+                        <td>
+                           <input type="text" name="factura_cliente" class="form-control" autocomplete="off" disabled="disabled"/>
+                        </td>
+                        <td>
+                           <input type="text" name="factura_fecha" class="form-control" autocomplete="off" disabled="disabled"/>
+                        </td>
+                        <td>
+                           <input type="text" name="factura_total" class="form-control" autocomplete="off" disabled="disabled"/>
+                        </td>
+                        <td>
+                           <a href="{$fsc->cod_subcuenta_cierre->url()}" target="_blank" id="linkcod_factura" class="btn btn-sm btn-default">
+                              <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                           </a>
+                        </td>
+                     </tr>        
+                  </table>
+               </div>
+               <div>
+                  <button style="width: 100%;" class="btn btn-sm btn-success" type="submit" onclick="this.disabled=true;this.form.submit();">
+                     <span class="glyphicon glyphicon-eye-open"></span>&nbsp; Ver las líneas de la factura
+                  </button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade" id="modal_finalizar">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Finalizar vida útil de una amortización</h4>
+         </div>
+         <div class="modal-body">            
+            <form action="index.php?page=amortizaciones&endlife=true" method="post" class="form">
+               <input name="id_amortizacion" class="form-control hidden" value="{$fsc->amortizacion->id_amortizacion}"/>
+               <table class="table">
+                     <thead>
+                        <tr>
+                           <th>Valor Inicial</th>
+                           <th class="text-right">Amortizado</th>
+                           <th class="text-right">Valor actual</th>
+                        </tr>
+                     </thead>
+                     <tr>
+                        <td>{$fsc->show_precio($fsc->amortizacion->valor)}</td>
+                        <td class="text-right">{$fsc->show_precio($fsc->amortizado)}</td>   
+                        <td class="text-right">{$fsc->show_precio($fsc->sin_amortizar)}</td>
+                     </tr>
+               </table>
+               <div style="text-align: left;">
+                  <label style="font-size: 15px;">Fecha de baja del amortizado</label>
+                  <input style="width: 150px;text-align: left;" name="fecha" class="form datepicker text-right" value="{$fsc->today()}"/>
+               </div>
+               <br/>
+               <button style="width: 100%;" class="btn btn-sm btn-danger" type="submit">
+                  <span class="glyphicon glyphicon-trash"></span>
+                  <span>
+                     &nbsp;Finalizar vida útil
+                  </span>
+               </button>
+            </form>
+         </div>
+         <div class="modal-footer" style="text-align: left;">
+            Al <b>finalizar la vida útil</b> de una amortización pueden darse dos casos:
+            <br/><br/>
+            <b>1.</b> Si la amortización se ha completado, se creara un asiento para dar de baja la amortización. Ejemplo:
+            <div class="table-responsive">
+               <table class="table table-hover">
+                  <thead>
+                     <tr>
+                        <td><b>Subcuenta + descripción</b></td>
+                        <td width="100" class="text-right"><b>Debe</b></td>
+                        <td width="100" class="text-right"><b>Haber</b></td>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <td>2130000000 Maquinaria</td>
+                        <td class="text-right">0.00 €</td>
+                        <td class="text-right">10 000.00 €</td>
+                     </tr>
+                     <tr>
+                        <td>2813000000 Amortización acumulada de maquinaria</td>
+                        <td class="text-right">10 000.00 €</td>
+                        <td class="text-right">0.00 €</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+            
+            <b>2.</b> Si la amortización <b>no</b> se ha completado, se crearan 2 asientos. Ejemplo:
+            <br/><br/>
+            Uno para contabilizar lo amortizado durante el útlimo periodo
+            <div class="table-responsive">
+               <table class="table table-hover">
+                  <thead>
+                     <tr>
+                        <td><b>Subcuenta + descripción</b></td>
+                        <td width="100" class="text-right"><b>Debe</b></td>
+                        <td width="100" class="text-right"><b>Haber</b></td>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <td>6810000000 Amortización del inmovilizado material</td>
+                        <td class="text-right">250.00 €</td>
+                        <td class="text-right">0.00 €</td>
+                     </tr>
+                     <tr>
+                        <td>2813000000 Amortización acumulada de maquinaria</td>
+                        <td class="text-right">0.00 €</td>
+                        <td class="text-right">250.00 €</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+            Y otro para dar de baja la amortización, lo que no se ha amortizado se contabilizara en perdidas del amortizado
+            <div class="table-responsive">
+               <table class="table table-hover">
+                  <thead>
+                     <tr>
+                        <td><b>Subcuenta + descripción</b></td>
+                        <td width="100" class="text-right"><b>Debe</b></td>
+                        <td width="100" class="text-right"><b>Haber</b></td>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <td>2130000000 Maquinaria</td>
+                        <td class="text-right">0.00 €</td>
+                        <td class="text-right">10 000.00 €</td>
+                     </tr>
+                     <tr>
+                        <td>2813000000 Amortización acumulada de maquinaria</td>
+                        <td class="text-right">8 000.00 €</td>
+                        <td class="text-right">0.00 €</td>
+                     </tr>
+                     <tr>
+                        <td>6710000000 Pérdidas procedentes del inmovilizado material </td>
+                        <td class="text-right">2 000.00 €</td>
+                        <td class="text-right">0.00 €</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div> 
+         </div>
+      </div>
+   </div>
+</div>
+
+{else}
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-sm-12">
+         <div class="page-header">
+            <h1>No se ha seleccionado ninguna amortización.</h1>
+         </div>
+      </div>
+   </div>
+</div>
+
+{/if}
+
+{include="footer"}

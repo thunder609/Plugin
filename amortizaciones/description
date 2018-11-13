@@ -1,0 +1,6 @@
+Permite crear amortizaciones desde las facturas de compra.
+Añade el menú amortizaciones a contabilidad, desde donde podemos ver las
+amortizaciones, su estado, modificarlas y contabilizarlas.
+Si tenemos CRON configurado, las amortizaciones se contabilizaran automaticamente.
+<br/>
+Licencia LGPL 3

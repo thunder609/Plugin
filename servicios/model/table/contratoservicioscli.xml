@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : contatoservicioscli.xml
+    Description:
+        Estructura de la tabla contatoservicioscli.
+-->
+<tabla>
+    <columna>
+        <nombre>idcontrato</nombre>
+        <tipo>serial</tipo>
+        <nulo>NO</nulo>
+        <defecto>nextval('contatoservicioscli_idcontrato_seq'::regclass)</defecto>
+    </columna>
+    <columna>
+        <nombre>codcliente</nombre>
+        <tipo>character varying(6)</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>codagente</nombre>
+        <tipo>character varying(10)</tipo>
+    </columna>
+    <columna>
+        <nombre>fecha_alta</nombre>
+        <tipo>date</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>fecha_renovacion</nombre>
+        <tipo>date</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>observaciones</nombre>
+        <tipo>text</tipo>
+    </columna>
+    <columna>
+        <nombre>codpago</nombre>
+        <tipo>character varying(10)</tipo>
+        <nulo>NO</nulo>
+    </columna>
+    <columna>
+        <nombre>importe_anual</nombre>
+        <tipo>double precision</tipo>
+    </columna>
+    <columna>
+        <nombre>periodo</nombre>
+        <tipo>character varying(10)</tipo>
+    </columna>
+    <columna>
+        <nombre>fsiguiente_servicio</nombre>
+        <tipo>date</tipo>
+    </columna>
+    <restriccion>
+        <nombre>contatoservicioscli_pkey</nombre>
+        <consulta>PRIMARY KEY (idcontrato)</consulta>
+    </restriccion>
+</tabla>

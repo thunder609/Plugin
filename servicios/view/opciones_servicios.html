@@ -1,0 +1,803 @@
+{include="header"}
+
+<script type="text/javascript" src="{#FS_PATH#}plugins/servicios/view/jscolor/jscolor.js"></script>
+<script type="text/javascript">
+   function eliminar_estado(id)
+   {
+      if( confirm("¿Realmente desea eliminar el estado " + id + "?") )
+      {
+         window.location.href = '{$fsc->url()}&delete_estado=' + id + '#estados';
+      }
+   }
+   function check(id) {
+      if( $("#" + id).is(":checked") )
+      {
+         $("#checked_" + id).prop("disabled", false);
+         $("#checked_" + id).prop("checked", true);
+      }
+      else
+      {
+         $("#checked_" + id).prop("checked", false);
+         $("#checked_" + id).prop("disabled", true);
+      }
+   }
+   function mostrar_estados(mostrar)
+   {
+      if(mostrar)
+      {
+         $("#div_estados").show();
+      }
+      else
+      {
+         $("#div_estados").hide();
+      }
+   }
+   $(document).ready( function() {
+      if(window.location.hash.substring(1) == 'estados')
+      {
+         $('#tab_opciones a[href="#estados"]').tab('show');
+         mostrar_estados(true);
+      }
+   });
+</script>
+
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-xs-6">
+         <div class="btn-group">
+            <a href="index.php?page=ventas_servicios" class="btn btn-sm btn-default">
+               <span class="glyphicon glyphicon-chevron-left"></span>
+               <span class="hidden-xs">&nbsp; Atrás</span>
+            </a>
+            <a href="{$fsc->url()}" class="btn btn-sm btn-default" title="Recargar la página">
+               <span class="glyphicon glyphicon-refresh"></span>
+            </a>
+         </div>
+      </div>
+      <div class="col-xs-6 text-right">
+         <h2 style="margin-top: 0px;">
+            <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Opciones
+         </h2>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-sm-12">
+         <ul id="tab_opciones" class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+               <a href="#general" aria-controls="general" role="tab" data-toggle="tab" onclick="mostrar_estados(false)">
+                  <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                  <span class="hidden-xs">&nbsp; General</span>
+               </a>
+            </li>
+            <li role="presentation">
+               <a href="#opciones-campos" aria-controls="opciones-campos" role="tab" data-toggle="tab" onclick="mostrar_estados(false)">
+                  <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                  <span class="hidden-xs">&nbsp; Casillas</span>
+               </a>
+            </li>
+            <li role="presentation">
+               <a href="#estados" aria-controls="estados" role="tab" data-toggle="tab" onclick="mostrar_estados(true)">
+                  <span class="glyphicon glyphicon-tags" aria-hidden="true"></span>
+                  <span class="hidden-xs">&nbsp; Estados</span>
+               </a>
+            </li>
+            <li role="presentation">
+               <a href="#traducciones" aria-controls="traducciones" role="tab" data-toggle="tab" onclick="mostrar_estados(false)">
+                  <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+                  <span class="hidden-xs">&nbsp; Traducciones</span>
+               </a>
+            </li>
+            <li role="presentation">
+               <a href="#calendario" aria-controls="calendario" role="tab" data-toggle="tab" onclick="mostrar_estados(false)">
+                  <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                  <span class="hidden-xs">&nbsp; Calendario</span>
+               </a>
+            </li>
+            <li role="presentation">
+               <a href="#opciones-linea" aria-controls="opciones-linea" role="tab" data-toggle="tab" onclick="mostrar_estados(false)">
+                  <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                  <span class="hidden-xs">&nbsp; Generar {#FS_ALBARANES#}</span>
+               </a>
+            </li>
+            {loop="$fsc->extensions"}
+               {if="$value->type=='tab'"}
+               <li role="presentation">
+                  <a href="#ext_{$value->name}" aria-controls="ext_{$value->name}" role="tab" data-toggle="tab">{$value->text}</a>
+               </li>
+               {/if}
+            {/loop}
+         </ul>
+      </div>
+   </div>
+   <form action="{$fsc->url()}" method="post">
+      <input type="hidden" name="servicios_setup" value="TRUE"/>
+      <div class="tab-content">
+         <div role="tabpanel" class="tab-pane active" id="general">
+            <br/>
+            <div class="row">
+               <div class="col-sm-4">
+                  <div class="form-group">
+                     <label>
+                        <input type="number" name="diasfin" value="{$fsc->servicios_setup['servicios_diasfin']}" class="form-control" autocomplete="off"/>
+                        Días estimados para la finalización de los {#FS_SERVICIOS#}.
+                     </label>
+                  </div>
+               </div>
+               <div class="col-sm-4">
+                  <div class="checkbox">
+                     <label>
+                        <input type="checkbox" name="usar_direccion" value="TRUE"{if="$fsc->servicios_setup['usar_direccion']"} checked=""{/if}/>
+                        Usar dirección cliente en búsquedas
+                     </label>
+                  </div>
+               </div>
+               <div class="col-sm-4 text-right">
+                  <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled = true;this.form.submit();">
+                     <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+                  </button>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-sm-12">
+                  <div class="form-group">
+                     Condiciones:
+                     <textarea name="condiciones" class="form-control" rows="10">{$fsc->servicios_setup['servicios_condiciones']}</textarea>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="opciones-campos">
+            <div class="row">
+               <div class="col-sm-12">
+                  <p class="help-block">
+                     Selecciona qué casillas quieres utilizar y cuales de ellas quieres
+                     que sean requeridas (imprescindibles) para guardar.
+                  </p>
+               </div>
+               <div class="col-sm-4">
+                  <div class="panel panel-default">
+                     <div class="panel-heading text-center">Material</div>
+                     <div class="panel-body">
+                        <div class="checkbox">
+                           <label>
+                              <input id="material" onclick="check(this.id)" type="checkbox" name="servicios_mostrar_material" value="TRUE"{if="$fsc->servicios_setup['servicios_mostrar_material']"} checked=""{/if}/>
+                              Mostrar Text Area Material
+                           </label>
+                        </div>
+                        <div class="checkbox">
+                           <label>
+                              <input id="checked_material" type="checkbox" name="servicios_material" value="TRUE"{if="$fsc->servicios_setup['servicios_material']"} checked=""{/if}{if="!$fsc->servicios_setup['servicios_mostrar_material']"} disabled=""{/if}/>
+                              Material requereido
+                           </label>
+                        </div> 
+                     </div> 
+                  </div> 
+               </div>
+                   <div class="col-sm-4">
+                  <div class="panel panel-default">
+                     <div class="panel-heading text-center">Marca</div>
+                     <div class="panel-body">
+                        <div class="checkbox">
+                           <label>
+                              <input id="marca" onclick="check(this.id)" type="checkbox" name="servicios_mostrar_marca" value="TRUE"{if="$fsc->servicios_setup['servicios_mostrar_marca']"} checked=""{/if}/>
+                              Mostrar Text Area Mark
+                           </label>
+                        </div>
+                        <div class="checkbox">
+                           <label>
+                              <input id="checked_marca" type="checkbox" name="servicios_marca" value="TRUE"{if="$fsc->servicios_setup['servicios_marca']"} checked=""{/if}{if="!$fsc->servicios_setup['servicios_mostrar_marca']"} disabled=""{/if}/>
+                              Material requereido marca
+                           </label>
+                        </div> 
+                     </div> 
+                  </div> 
+               </div>
+
+                <div class="col-sm-4">
+                  <div class="panel panel-default">
+                     <div class="panel-heading text-center">Modelo</div>
+                     <div class="panel-body">
+                        <div class="checkbox">
+                           <label>
+                              <input id="modelo" onclick="check(this.id)" type="checkbox" name="servicios_mostrar_modelo" value="TRUE"{if="$fsc->servicios_setup['servicios_mostrar_modelo']"} checked=""{/if}/>
+                              Mostrar Text Area Mark
+                           </label>
+                        </div>
+                        <div class="checkbox">
+                           <label>
+                              <input id="checked_modelo" type="checkbox" name="servicios_modelo" value="TRUE"{if="$fsc->servicios_setup['servicios_modelo']"} checked=""{/if}{if="!$fsc->servicios_setup['servicios_mostrar_modelo']"} disabled=""{/if}/>
+                              Modelo requereido 
+                           </label>
+                        </div> 
+                     </div> 
+                  </div> 
+               </div>
+
+                <div class="col-sm-4">
+                  <div class="panel panel-default">
+                     <div class="panel-heading text-center">Serial</div>
+                     <div class="panel-body">
+                        <div class="checkbox">
+                           <label>
+                              <input id="serial" onclick="check(this.id)" type="checkbox" name="servicios_mostrar_serial" value="TRUE"{if="$fsc->servicios_setup['servicios_mostrar_serial']"} checked=""{/if}/>
+                              Mostrar Text Area Serial
+                           </label>
+                        </div>
+                        <div class="checkbox">
+                           <label>
+                              <input id="checked_serial" type="checkbox" name="servicios_serial" value="TRUE"{if="$fsc->servicios_setup['servicios_serial']"} checked=""{/if}{if="!$fsc->servicios_setup['servicios_mostrar_serial']"} disabled=""{/if}/>
+                              Serial requereido 
+                           </label>
+                        </div> 
+                     </div> 
+                  </div> 
+               </div>
+               <div class="col-sm-4">
+                  <div class="panel panel-default">
+                     <div class="panel-heading text-center">Estado Material</div>
+                     <div class="panel-body">
+                        <div class="checkbox">
+                           <label>
+                              <input id="matestado" onclick="check(this.id)" type="checkbox" name="servicios_mostrar_material_estado" value="TRUE"{if="$fsc->servicios_setup['servicios_mostrar_material_estado']"} checked=""{/if}/>
+                              Mostrar Text Area Estado material
+                           </label>
+                        </div>
+                        <div class="checkbox">
+                           <label>
+                              <input id="checked_matestado" type="checkbox" name="servicios_material_estado" value="TRUE"{if="$fsc->servicios_setup['servicios_material_estado']"} checked=""{/if} {if="!$fsc->servicios_setup['servicios_mostrar_material_estado']"} disabled=""{/if}/>
+                              Estado material requerido
+                           </label>
+                        </div> 
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-4">
+                  <div class="panel panel-default">
+                     <div class="panel-heading text-center">Accesorios</div>
+                     <div class="panel-body">
+                        <div class="checkbox">
+                           <label>
+                              <input id="accesorios" onclick="check(this.id)" type="checkbox" name="servicios_mostrar_accesorios" value="TRUE"{if="$fsc->servicios_setup['servicios_mostrar_accesorios']"} checked=""{/if}/>
+                              Mostrar Text Area Accesorios
+                           </label>
+                        </div>
+                        <div class="checkbox">
+                           <label>
+                              <input id="checked_accesorios" type="checkbox" name="servicios_accesorios" value="TRUE"{if="$fsc->servicios_setup['servicios_accesorios']"} checked=""{/if}{if="!$fsc->servicios_setup['servicios_mostrar_accesorios']"} disabled=""{/if}/>
+                              Accesorios requerido
+                           </label>
+                        </div> 
+                     </div> 
+                  </div>
+               </div>   
+            </div>
+                <div class="row">  
+                    <div class="col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading text-center">Descripción</div>
+                            <div class="panel-body">
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="descripcion" onclick="check(this.id)" type="checkbox" name="servicios_mostrar_descripcion" value="TRUE"{if="$fsc->servicios_setup['servicios_mostrar_descripcion']"} checked=""{/if}/>
+                                        Mostrar Text Area Descripción
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="checked_descripcion" type="checkbox" name="servicios_descripcion" value="TRUE"{if="$fsc->servicios_setup['servicios_descripcion']"} checked=""{/if}{if="!$fsc->servicios_setup['servicios_mostrar_descripcion']"} disabled=""{/if}/>
+                                        Descripción requerido
+                                    </label>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading text-center">Solución</div>
+                            <div class="panel-body">
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="solucion" onclick="check(this.id)" type="checkbox" name="servicios_mostrar_solucion" value="TRUE"{if="$fsc->servicios_setup['servicios_mostrar_solucion']"} checked=""{/if}/>
+                                        Mostrar Text Area Solución
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="checked_solucion" type="checkbox" name="servicios_solucion" value="TRUE"{if="$fsc->servicios_setup['servicios_solucion']"} checked=""{/if}{if="!$fsc->servicios_setup['servicios_mostrar_solucion']"} disabled=""{/if}/>
+                                        Solución requerido
+                                    </label>
+                                </div> 
+                            </div> 
+                        </div> 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading text-center">Fecha Inicio</div>
+                            <div class="panel-body">
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="inicio" onclick="check(this.id)" type="checkbox" name="servicios_mostrar_fechainicio" value="TRUE"{if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"} checked=""{/if}/>
+                                        Mostrar Fecha de inicio
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="checked_inicio" type="checkbox" name="servicios_fechainicio" value="TRUE"{if="$fsc->servicios_setup['servicios_fechainicio']"} checked=""{/if}{if="!$fsc->servicios_setup['servicios_mostrar_fechainicio']"} disabled=""{/if}/>
+                                        Fecha inicio requerido
+                                    </label>
+                                </div> 
+                            </div> 
+                        </div> 
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading text-center">Fecha fin</div>
+                            <div class="panel-body">
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="fin" onclick="check(this.id)" type="checkbox" name="servicios_mostrar_fechafin" value="TRUE"{if="$fsc->servicios_setup['servicios_mostrar_fechafin']"} checked=""{/if}/>
+                                        Mostrar Fecha de fin
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="checked_fin" type="checkbox" name="servicios_fechafin" value="TRUE"{if="$fsc->servicios_setup['servicios_fechafin']"} checked=""{/if}{if="!$fsc->servicios_setup['servicios_mostrar_fechafin']"} disabled=""{/if}/>
+                                        Fecha fin requerido
+                                    </label>
+                                </div> 
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading text-center">Garantia</div>
+                            <div class="panel-body">
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="garantia" onclick="check(this.id)" type="checkbox" name="servicios_mostrar_garantia" value="TRUE"{if="$fsc->servicios_setup['servicios_mostrar_garantia']"} checked=""{/if}/>
+                                        Mostrar  de garantia
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="checked_garantia" type="checkbox" name="servicios_garantia" value="TRUE"{if="$fsc->servicios_setup['servicios_garantia']"} checked=""{/if}{if="!$fsc->servicios_setup['servicios_mostrar_garantia']"} disabled=""{/if}/>
+                                        Garantia requerido
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 text-right">
+                        <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled = true; this.form.submit();">
+                            <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+                        </button>
+                    </div>
+                </div>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="traducciones">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <br/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Servicios:</span>
+                            <input type="text" name="st_servicios" value="{$fsc->servicios_setup['st_servicios']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Servicio:</span>
+                            <input type="text" name="st_servicio" value="{$fsc->servicios_setup['st_servicio']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Material</span>
+                            <input type="text" name="st_material" value="{$fsc->servicios_setup['st_material']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                     <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Marca</span>
+                            <input type="text" name="st_marca" value="{$fsc->servicios_setup['st_marca']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                     <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Modelo</span>
+                            <input type="text" name="st_modelo" value="{$fsc->servicios_setup['st_modelo']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                     <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Serial</span>
+                            <input type="text" name="st_serial" value="{$fsc->servicios_setup['st_serial']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Estado Material</span>
+                            <input type="text" name="st_material_estado" value="{$fsc->servicios_setup['st_material_estado']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Accesorios</span>
+                            <input type="text" name="st_accesorios" value="{$fsc->servicios_setup['st_accesorios']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Descripción</span>
+                            <input type="text" name="st_descripcion" value="{$fsc->servicios_setup['st_descripcion']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Solución</span>
+                            <input type="text" name="st_solucion" value="{$fsc->servicios_setup['st_solucion']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Fecha de inicio</span>
+                            <input type="text" name="st_fechainicio" value="{$fsc->servicios_setup['st_fechainicio']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Fecha Fin</span>
+                            <input type="text" name="st_fechafin" value="{$fsc->servicios_setup['st_fechafin']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <span class="text-uppercase">Garantía</span>
+                            <input type="text" name="st_garantia" value="{$fsc->servicios_setup['st_garantia']}" class="form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 text-right">
+                        <br/>
+                        <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled = true;
+                          this.form.submit();">
+                            <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+                        </button>
+                    </div>
+                </div>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="calendario">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <br/>
+                        Para el correcto funcionamiento del calendario debes tener activado <b>fecha de inicio y fecha de finalización</b> en las casillas.<br/>
+                        Si no quieres usar la finaliación; desactiva la casilla de fecha de finalización y lo que hará es crear un evento desde el inicio + fracción del tiempo que elijas.<br/>
+                        <h3>Uso</h3>
+                        Para que el calendario esté activo mínimo debes tener fechainicio ( en tab casillas  ) activado.
+                        El formato de introducción manual es: dd-mm-aaaa hh:mm. Si no es ese formato no dejará introducir valores.
+                        <br/><br/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            Hora de inicio del calendario
+                            <div class='input-group date' id='cal_inicio'>
+                                <input type='text' data-toggle="tooltip" data-placement="bottom" title="Hora : hh:mm" name="cal_inicio" pattern="([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" value="{$fsc->servicios_setup['cal_inicio']}" class="form-control"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-sm-3'>
+                        <div class="form-group">
+                            Hora de fin del calendario
+                            <div class='input-group date' id='cal_fin'>
+                                <input type='text' data-toggle="tooltip" data-placement="bottom" title="Hora : hh:mm" name="cal_fin" pattern="([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" value="{$fsc->servicios_setup['cal_fin']}" class="form-control"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            Fracción de tiempo entre horas
+                            <input type="number" name="cal_intervalo" value="{$fsc->servicios_setup['cal_intervalo']}" class="form-control" autocomplete="off" min="1" max="30"/>
+                            De 1 a 30 minutos
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 text-right">
+                        <br/>
+                        <button class="btn btn-sm btn-primary" type="submit">
+                            <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+                        </button>
+                    </div>
+                </div>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="opciones-linea">
+              <div class="row">
+                 <div class="col-sm-12">
+                    <p class="help-block"><h2>Generar línea en albarán.</h2>
+                    Al finalizar un servicio y generar un albarán, puedes hacer que se cree una línea con los datos del servicio para que se pueda imprimir fácilmente.
+                    Desde aquí lo puedes activar y seleccionar que campos quieres que se muestren. Se mostrarán los campos con las traducciones que hayas puesto.
+                    <div class="checkbox">
+                       <label>
+                          <input type="checkbox" name="servicios_linea" value="TRUE"{if="$fsc->servicios_setup['servicios_linea']"} checked=""{/if}/>
+                          Crear linea con datos del servicio
+                       </label>
+                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                       <label>
+                          <input type="checkbox" name="servicios_linea1" value="TRUE"{if="$fsc->servicios_setup['servicios_linea1']"} checked=""{/if}/>
+                          Modificar la primera línea del albarán con los datos del servicio en la descripción
+                       </label>
+                    </div>
+                    </p>
+                 </div>
+                 <div class="col-sm-4">
+                    <div class="panel panel-default">
+                       <div class="panel-heading text-center">Material</div>
+                       <div class="panel-body">
+                          <div class="checkbox">
+                             <label>
+                                <input type="checkbox" name="servicios_material_linea" value="TRUE"{if="$fsc->servicios_setup['servicios_material_linea']"} checked=""{/if}/>
+                                Añadir material a la linea
+                             </label>
+                          </div>
+                       </div> 
+                    </div> 
+                 </div>
+
+                  <div class="col-sm-4">
+                    <div class="panel panel-default">
+                       <div class="panel-heading text-center">Marca</div>
+                       <div class="panel-body">
+                          <div class="checkbox">
+                             <label>
+                                <input type="checkbox" name="servicios_marca_linea" value="TRUE"{if="$fsc->servicios_setup['servicios_marca_linea']"} checked=""{/if}/>
+                                Añadir marca a la linea
+                             </label>
+                          </div>
+                       </div> 
+                    </div> 
+                 </div> 
+
+                   <div class="col-sm-4">
+                    <div class="panel panel-default">
+                       <div class="panel-heading text-center">Modelo</div>
+                       <div class="panel-body">
+                          <div class="checkbox">
+                             <label>
+                                <input type="checkbox" name="servicios_modelo_linea" value="TRUE"{if="$fsc->servicios_setup['servicios_modelo_linea']"} checked=""{/if}/>
+                                Añadir modelo a la linea
+                             </label>
+                          </div>
+                       </div> 
+                    </div> 
+                 </div> 
+                   <div class="col-sm-4">
+                    <div class="panel panel-default">
+                       <div class="panel-heading text-center">Serial</div>
+                       <div class="panel-body">
+                          <div class="checkbox">
+                             <label>
+                                <input type="checkbox" name="servicios_serial_linea" value="TRUE"{if="$fsc->servicios_setup['servicios_serial_linea']"} checked=""{/if}/>
+                                Añadir marca a la linea
+                             </label>
+                          </div>
+                       </div> 
+                    </div> 
+                 </div> 
+
+                 <div class="col-sm-4">
+                    <div class="panel panel-default">
+                       <div class="panel-heading text-center">Material estado</div>
+                       <div class="panel-body">
+                          <div class="checkbox">
+                             <label>
+                                <input type="checkbox" name="servicios_material_estado_linea" value="TRUE"{if="$fsc->servicios_setup['servicios_material_estado_linea']"} checked=""{/if}/>
+                                Añadir material estado a la linea
+                             </label>
+                          </div>
+                       </div> 
+                    </div> 
+                 </div>
+                 <div class="col-sm-4">
+                    <div class="panel panel-default">
+                       <div class="panel-heading text-center">Accesorios</div>
+                       <div class="panel-body">
+                          <div class="checkbox">
+                             <label>
+                                <input type="checkbox" name="servicios_accesorios_linea" value="TRUE"{if="$fsc->servicios_setup['servicios_accesorios_linea']"} checked=""{/if}/>
+                                Añadir accesorios a la linea
+                             </label>
+                          </div>
+                       </div> 
+                    </div> 
+                 </div>
+              </div>
+              <div class="row">  
+                <div class="col-sm-6">
+                    <div class="panel panel-default">
+                       <div class="panel-heading text-center">Descripción</div>
+                       <div class="panel-body">
+                          <div class="checkbox">
+                             <label>
+                                <input type="checkbox" name="servicios_descripcion_linea" value="TRUE"{if="$fsc->servicios_setup['servicios_descripcion_linea']"} checked=""{/if}/>
+                                Añadir descripcion a la linea
+                             </label>
+                          </div>
+                       </div> 
+                    </div> 
+                 </div>
+                 <div class="col-sm-6">
+                    <div class="panel panel-default">
+                       <div class="panel-heading text-center">Solución</div>
+                       <div class="panel-body">
+                          <div class="checkbox">
+                             <label>
+                                <input type="checkbox" name="servicios_solucion_linea" value="TRUE"{if="$fsc->servicios_setup['servicios_solucion_linea']"} checked=""{/if}/>
+                                Añadir solución a la linea
+                             </label>
+                          </div>
+                       </div> 
+                    </div> 
+                 </div>
+              </div>
+              <div class="row">
+                 <div class="col-sm-4">
+                    <div class="panel panel-default">
+                       <div class="panel-heading text-center">Fecha Inicio</div>
+                       <div class="panel-body">
+                          <div class="checkbox">
+                             <label>
+                                <input type="checkbox" name="servicios_fechainicio_linea" value="TRUE"{if="$fsc->servicios_setup['servicios_fechainicio_linea']"} checked=""{/if}/>
+                                Añadir fecha inicio a la linea
+                             </label>
+                          </div>
+                       </div> 
+                    </div> 
+                 </div>
+                 <div class="col-sm-4">
+                    <div class="panel panel-default">
+                       <div class="panel-heading text-center">Fecha fin</div>
+                       <div class="panel-body">
+                          <div class="checkbox">
+                             <label>
+                                <input type="checkbox" name="servicios_fechafin_linea" value="TRUE"{if="$fsc->servicios_setup['servicios_fechafin_linea']"} checked=""{/if}/>
+                                Añadir fecha fin a la linea
+                             </label>
+                          </div>
+                       </div> 
+                    </div> 
+                 </div>
+                 <div class="col-sm-4">
+                    <div class="panel panel-default">
+                       <div class="panel-heading text-center">Garantía</div>
+                       <div class="panel-body">
+                          <div class="checkbox">
+                             <label>
+                                <input type="checkbox" name="servicios_garantia_linea" value="TRUE"{if="$fsc->servicios_setup['servicios_garantia_linea']"} checked=""{/if}/>
+                                Añadir garantía fin a la linea
+                             </label>
+                          </div>
+                       </div> 
+                    </div> 
+                 </div>
+              </div>
+              <div class="row">
+                 <div class="col-sm-12 text-right">
+                    <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled = true; this.form.submit();">
+                       <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+                    </button>
+                 </div>
+              </div>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="estados"></div>
+      </div>
+   </form>
+   <div class="row">
+      <div id="div_estados" class="col-sm-12" style="display: none;">
+         <div class="table-responsive">
+            <table class="table">
+               <thead>
+                  <tr>
+                     <th class="text-left">Estado</th>
+                     <th class="text-left">Descripción</th>
+                     <th class="text-left">Color</th>
+                     <th class="text-center">¿{#FS_SERVICIO#} Activo?</th>
+                     <th class="text-center">¿Generar {#FS_ALBARAN#}?</th>
+                     <th class="text-right">Acciones</th>
+                  </tr>
+               </thead>
+               {loop="$fsc->estado->all()"}
+                  <form action="{$fsc->url()}#estados" method="post" class="form">
+                     <input type="hidden" name="id_estado" value="{$value->id}"/>
+                     <tr>
+                        <td><div class="form-control">{$value->id}</div></td>
+                        <td><input type="text" name="descripcion" value="{$value->descripcion}" class="form-control" autocomplete="off"/></td>
+                        <td><input type="text" name="color" value="{$value->color}" class="form-control color" autocomplete="off" maxlength="6"/></td>
+                        <td class="text-center">
+                           <div class="checkbox">
+                              <label>
+                                 <input type="checkbox" name="activo" value="TRUE"{if="$value->activo"} checked=""{/if}/>
+                              </label>
+                           </div>
+                        </td>
+                        <td class="text-center">
+                           <div class="checkbox">
+                              <label>
+                                 <input type="checkbox" name="albaran" value="TRUE"{if="$value->albaran"} checked=""{/if}/>
+                              </label>
+                           </div>
+                        </td>
+                        <td class="text-right">
+                           <div class="btn-group">
+                              {if="$fsc->allow_delete"}
+                                 {if="$fsc->estado->tiene_servicios($value->id)"}
+                                 <a class="btn btn-sm btn-warning" href="index.php?page=ventas_servicios&estado={$value->id}" title="No lo puedes eliminar porque tiene servicios asociados">
+                                    <span class="glyphicon glyphicon-lock"></span>
+                                 </a>
+                                 {else}
+                                 <a class="btn btn-sm btn-danger" href="#" onclick="eliminar_estado('{$value->id}')" title="Eliminar">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                 </a>
+                                 {/if}
+                              {/if}
+                              <button type="submit" class="btn btn-sm btn-primary" onclick="this.disabled = true;this.form.submit();" title="Guardar">
+                                 <span class="glyphicon glyphicon-floppy-disk"></span>
+                              </button>
+                           </div>
+                        </td>
+                     </tr>
+                  </form>
+               {/loop}
+               <form action="{$fsc->url()}#estados" method="post" class="form">
+                  <tr class="info">
+                     <td><input type="text" name="id_estado" value="{$fsc->estado->get_nuevo_id()}" class="form-control" autocomplete="off"/></td>
+                     <td><input type="text" name="descripcion" value="" class="form-control" autocomplete="off"/></td>
+                     <td><input type="text" name="color" value="FFFFFF" class="form-control color" autocomplete="off" maxlength="6"/></td>
+                     <td class="text-center">
+                        <div class="checkbox">
+                           <label>
+                              <input type="checkbox" name="activo" value="TRUE" checked=""/>
+                           </label>
+                        </div>
+                     </td>
+                     <td class="text-center">
+                        <div class="checkbox">
+                           <label>
+                              <input type="checkbox" name="albaran" value="TRUE"/>
+                           </label>
+                        </div>
+                     </td>
+                     <td class="text-right">
+                        <div class="btn-group">
+                           <button type="submit" class="btn btn-sm btn-primary">
+                              <span class="glyphicon glyphicon-plus-sign"></span>
+                              <span class="hidden-xs">&nbsp; Nuevo</span>
+                           </button>
+                        </div>
+                     </td>
+                  </tr>
+               </form>
+            </table>
+         </div>
+      </div>
+   </div>
+</div>
+
+{include="footer"}

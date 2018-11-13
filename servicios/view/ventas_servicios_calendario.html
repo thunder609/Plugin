@@ -1,0 +1,277 @@
+{include="header"}
+
+{if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+<link rel="stylesheet" href="{#FS_PATH#}plugins/servicios/view/css/calendar.css" />
+<script type="text/javascript" src="{#FS_PATH#}plugins/servicios/view/js/underscore-min.js"></script>
+<script type="text/javascript" src="{#FS_PATH#}plugins/servicios/view/js/calendar.js"></script>
+<script type="text/javascript" src="{#FS_PATH#}plugins/servicios/view/js/es-ES.js"></script>
+<script type="text/javascript">
+   function clean_cliente()
+   {
+      document.f_custom_search.ac_cliente.value='';
+      document.f_custom_search.codcliente.value='';
+      document.f_custom_search.ac_cliente.focus();
+      document.f_custom_search.submit();
+   }
+   $(document).ready(function() {
+      $("#ac_cliente").autocomplete({
+         serviceUrl: '{$fsc->url()}',
+         paramName: 'buscar_cliente',
+         onSelect: function (suggestion) {
+            if(suggestion)
+            {
+               if(document.f_custom_search.codcliente.value != suggestion.data && suggestion.data != '')
+               {
+                  document.f_custom_search.codcliente.value = suggestion.data;
+                  document.f_custom_search.submit();
+               }
+            }
+         }
+      });
+   });
+</script>
+
+<form name="f_custom_search" action="{$fsc->url()}" method="post" class="form">
+   {if="$fsc->cliente"}
+   <input type="hidden" name="codcliente" value="{$fsc->cliente->codcliente}"/>
+   {else}
+   <input type="hidden" name="codcliente"/>
+   {/if}
+   <div class="container-fluid">
+      <div class="row">
+         <div class="col-xs-6">
+            <div class="btn-group">
+               <a href="index.php?page=ventas_servicios" class="btn btn-sm btn-default">
+                  <span class="glyphicon glyphicon-arrow-left"></span>
+                  <span class="hidden-xs">&nbsp; Atrás</span>
+               </a>
+               <a href="{$fsc->url()}" class="btn btn-sm btn-default" title="Recargar la página">
+                  <span class="glyphicon glyphicon-refresh"></span>
+               </a>
+               {if="$fsc->page->is_default()"}
+               <a class="btn btn-sm btn-default active" href="{$fsc->url()}&amp;default_page=FALSE" title="desmarcar como página de inicio">
+                  <span class="glyphicon glyphicon-home"></span>
+               </a>
+               {else}
+               <a class="btn btn-sm btn-default" href="{$fsc->url()}&amp;default_page=TRUE" title="marcar como página de inicio">
+                  <span class="glyphicon glyphicon-home"></span>
+               </a>
+               {/if}
+            </div>
+         </div>
+         <div class="col-xs-6 text-right">
+            <h2 style="margin-top: 0px;">Calendario</h2>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-sm-4">
+            <div class="form-group">
+               <select name="estado" class="form-control" onchange="this.form.submit()">
+                  <option value="">Cualquier estado</option>
+                  <option value="">------</option>
+                  {loop="$fsc->estados->all()"}
+                     <option value="{$value->id}"{if="$value->id==$fsc->estado"} selected=""{/if}>{$value->descripcion}</option>
+                  {/loop}
+               </select>
+            </div>
+         </div>
+         <div class="col-sm-4">
+            <div class="form-group">
+               <select name="codagente" class="form-control" onchange="this.form.submit()">
+                  <option value="">Cualquier empleado</option>
+                  <option value="">------</option>
+                  {loop="$fsc->agente->all()"}
+                     <option value="{$value->codagente}"{if="$value->codagente==$fsc->codagente"} selected=""{/if}>{$value->get_fullname()}</option>
+                  {/loop}
+               </select>
+            </div>
+         </div>
+         <div class="col-sm-4">
+            <div class="form-group">
+               <div class="input-group">
+                  {if="$fsc->cliente"}
+                  <input class="form-control" type="text" name="ac_cliente" value="{$fsc->cliente->nombre}" id="ac_cliente" placeholder="Cualquier cliente" autocomplete="off"/>
+                  {else}
+                  <input class="form-control" type="text" name="ac_cliente" id="ac_cliente" placeholder="Cualquier cliente" autocomplete="off"/>
+                  {/if}
+                  <span class="input-group-btn">
+                     <button class="btn btn-default" type="button" onclick="clean_cliente()">
+                        <span class="glyphicon glyphicon-remove"></span>
+                     </button>
+                  </span>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-sm-4 col-xs-6">
+            <div class="btn-group pull-left">
+               <button type="button" class="btn btn-sm btn-primary" data-calendar-nav="prev">
+                  <span class="glyphicon glyphicon-chevron-left"></span>
+               </button>
+   				<button type="button" class="btn btn-sm btn-default" data-calendar-nav="today">Hoy</button>
+   				<button type="button" class="btn btn-sm btn-primary" data-calendar-nav="next">
+                  <span class="glyphicon glyphicon-chevron-right"></span>
+               </button>
+            </div>
+         </div>
+         <div class="col-sm-4 hidden-xs text-right">
+            <div class="title">Calendario</div>
+         </div>
+         <div class="col-sm-4 col-xs-6 text-right">
+            <div class="btn-group">
+               <button type="button" class="btn btn-sm btn-warning" data-calendar-view="year">Año</button>
+               <button type="button" class="btn btn-sm btn-warning active" data-calendar-view="month">Mes</button>
+               <button type="button" class="btn btn-sm btn-warning" data-calendar-view="week">Semana</button>
+               <button type="button" class="btn btn-sm btn-warning" data-calendar-view="day">Día</button>
+            </div>
+         </div>
+      </div>
+      <div class="row" style="margin-top: 15px;">
+         <div class="col-md-10 col-sm-12 col-xs-12">
+            <div style="margin-left: 50px">
+               <div id="calendar"></div>
+            </div>
+         </div>
+         <div class="col-md-2 col-sm-12 col-xs-12">
+            <div class="visible-sm-block visible-xs-block"></br></div>
+            <div class="form-group">
+               <label class="control-label">
+                  <input type="checkbox" value="#events-modal" id="events-in-modal"> Abrir eventos en una ventana
+               </label>
+               <h4>Eventos</h4>
+               <div id="eventlist" class="list-group"></div>
+            </div>
+         </div>
+      </div>
+   </div>
+</form>
+
+<div class="modal fade" id="events-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 class="modal-title">Evento</h3>
+         </div>
+         <div class="modal-body" style="height: 400px">
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<script type="text/javascript">
+   (function($) {
+   	"use strict";
+   	var options = {
+               events_source: {$fsc->get_datos()},
+               view: 'week',
+               tmpl_path: '{#FS_PATH#}plugins/servicios/view/tmpls/',
+               tmpl_cache: false,
+               language: 'es-ES',
+               time_start: '{$fsc->servicios_setup['cal_inicio']}',
+               time_end: '{$fsc->servicios_setup['cal_fin']}',
+               time_split: '{$fsc->servicios_setup['cal_intervalo']}',
+   		onAfterEventsLoad: function(events) {
+   			if(!events) {
+   				return;
+   			}
+   			var list = $('#eventlist');
+   			list.html('');
+
+   			$.each(events, function(key, val) {
+   				$(document.createElement('div'))
+   					.html('<a class="list-group-item" href="' + val.url + '" target="_blank">' + val.title + '</a>')
+   					.appendTo(list);
+   			});
+   		},
+   		onAfterViewLoad: function(view) {
+   			$('.title').text(this.getTitle());
+   			$('.btn-group button').removeClass('active');
+   			$('button[data-calendar-view="' + view + '"]').addClass('active');
+   		},
+   		classes: {
+   			months: {
+   				general: 'label'
+   			}
+   		}
+   	};
+
+   	var calendar = $('#calendar').calendar(options);
+
+   	$('.btn-group button[data-calendar-nav]').each(function() {
+   		var $this = $(this);
+   		$this.click(function() {
+   			calendar.navigate($this.data('calendar-nav'));
+   		});
+   	});
+
+   	$('.btn-group button[data-calendar-view]').each(function() {
+   		var $this = $(this);
+   		$this.click(function() {
+   			calendar.view($this.data('calendar-view'));
+   		});
+   	});
+
+   	$('#first_day').change(function(){
+   		var value = $(this).val();
+   		value = value.length ? parseInt(value) : null;
+   		calendar.setOptions({first_day: value});
+   		calendar.view();
+   	});
+
+   	$('#language').change(function(){
+   		calendar.setLanguage($(this).val());
+   		calendar.view();
+   	});
+
+   	$('#events-in-modal').change(function(){
+   		var val = $(this).is(':checked') ? $(this).val() : null;
+   		calendar.setOptions({modal: val});
+   	});
+   	$('#format-12-hours').change(function(){
+   		var val = $(this).is(':checked') ? true : false;
+   		calendar.setOptions({format12: val});
+   		calendar.view();
+   	});
+   	$('#show_wbn').change(function(){
+   		var val = $(this).is(':checked') ? true : false;
+   		calendar.setOptions({display_week_numbers: val});
+   		calendar.view();
+   	});
+   	$('#show_wb').change(function(){
+   		var val = $(this).is(':checked') ? true : false;
+   		calendar.setOptions({weekbox: val});
+   		calendar.view();
+   	});
+   	$('#events-modal .modal-header, #events-modal .modal-footer').click(function(e){
+   		//e.preventDefault();
+   		//e.stopPropagation();
+   	});
+   }(jQuery));
+</script>
+{else}
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-lg-12">
+         <div class="page-header">
+            <h1>
+               <span class="glyphicon glyphicon-warning-sign"></span>
+               El calendario no está activo
+            </h1>
+            <p class="help-block">
+               El calendario no está activo porque no tienes <b>fecha inicio</b> activada en opciones -&gt; casillas.
+            </p>
+         </div>
+         <a href="index.php?page=opciones_servicios" class="btn btn-sm btn-default">
+            <span class="glyphicon glyphicon-wrench"></span>&nbsp; Opciones de Servicios
+         </a>
+      </div>
+   </div>
+</div>
+{/if}
+
+{include="footer"}
